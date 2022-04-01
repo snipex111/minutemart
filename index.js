@@ -5,13 +5,12 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const users = require('./models/users');
-//const products = require('./models/products');
+const products = require('./models/products');
 
 
 
 // const userroutes = require('./routes/users');
 // const productroutes = require('./routes/products');
-
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'));
@@ -19,6 +18,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+
 
 //const dburl = process.env.DB_URL;
 mongoose.connect('mongodb+srv://minutemart:1234@cluster0.vsuxx.mongodb.net/minutemart?retryWrites=true&w=majority');
@@ -39,6 +40,13 @@ app.get('/users', async (req, res) => {
 app.get('/users/new', (req, res) => {
     res.render('users/create')
 })
+app.get('/products/new', (req, res) => {
+    res.render('products/new')
+})
+app.get('/products/', (req, res) => {
+    res.render('products/index')
+})
+
 
 app.post('/users', async (req, res) => {
     const newuser = new users(req.body);
