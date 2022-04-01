@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%=product.name %> </title>
+</head>
+
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2 offset-3">
+                <%= product.image %>
+            </div>
+            <div class="col-4">
+                <h1><%= product.name %></h1>
+                <p><%=product.price  %> </p>
+                <div>
+                    <form action="/products/<%=product._id%>/update" method="get" class="d-inline">
+                        <button class="btn btn-info">Update</button>
+                    </form>
+                    <form action="/products/<%=product._id%>?_method=DELETE" method="post" class="d-inline">
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+                <p>
+                    <%=product.description  %>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
