@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Product</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+
+</head>
+
+<body>
+    <h3 class="mt-5 text-center">
+        Update Product
+        <!-- <small class="text-muted">Enter details below </small> -->
+    </h3>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-6 offset-3">
+                <form action="/products/<%=product._id%>?_method=PUT" method="post">
+                    <div class="mb-3">
+                        <label for="productname" class="form-label">Product Name</label>
+                        <input type="text" name="name" class="form-control" id="productname"
+                            aria-describedby="emailHelp" value="<%=product.name%>">
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="number" name="price" class="form-control" id="price" value="<%=product.price%>">
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagesrc" class="form-label">Image</label>
+                        <input type="text" name="image" class="form-control" id="imagesrc" value="<%=product.image%>">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" name="description" class="form-control" id="description"
+                            value="<%=product.description%>">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

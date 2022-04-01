@@ -53,7 +53,20 @@ app.post('/products', async (req, res) => {
     await newproduct.save();
     res.redirect('/products');
 })
+app.delete('/products/:productid', async (req, res) => {
+    await products.findByIdAndDelete(req.params.productid);
+    res.redirect('/products');
+})
+app.get('/products/:productid/update', async (req, res) => {
+    const requiredproduct = products.findById(req.params.productid);
+    res.render('products/update', { requiredproduct });
+})
+app.put('/products/:id', async (req, res) => {
+    const kal = req.params.id;
+    await products.findByIdAndUpdate(req.params.id, req.body, { runValidators: true });
 
+    res.redirect(`/products/${kal}`);
+})
 app.post('/users', async (req, res) => {
     const newuser = new users(req.body);
     await newuser.save();
