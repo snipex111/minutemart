@@ -6,11 +6,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Products</title>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
 </head>
 
 <body>
+    <%- include('../partials/navbar') %>
     <h1>All Products</h1>
-
+    <div class="container-fluid">
+        <div class="row">
+            <% for(let product of productlist) {%>
+            <div class="col-md-3 col-sm-6 col-12 mb-3">
+                <div class="card">
+                    <img src="<%=product.image  %> " class="card-img-top img-fluid" style="height:200px;"
+                        alt="demo image">
+                    <div class="card-body">
+                        <h5 class="card-title"><%=product.name %> </h5>
+                        <p class="card-text"><%=product.price %></p>
+                        <!-- <p class="card-text"><%=product.description %></p> -->
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
 </body>
 
 </html>
