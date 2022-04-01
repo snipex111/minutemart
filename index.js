@@ -43,10 +43,16 @@ app.get('/users/new', (req, res) => {
 app.get('/products/new', (req, res) => {
     res.render('products/new')
 })
-app.get('/products/', (req, res) => {
-    res.render('products/index')
-})
 
+app.get('/products/', async (req, res) => {
+    const productlist = await products.find();
+    res.render('products/index', { productlist })
+})
+app.post('/products', async (req, res) => {
+    const newproduct = new products(req.body);
+    await newproduct.save();
+    res.redirect('/products');
+})
 
 app.post('/users', async (req, res) => {
     const newuser = new users(req.body);
