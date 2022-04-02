@@ -58,14 +58,18 @@ app.delete('/products/:productid', async (req, res) => {
     res.redirect('/products');
 })
 app.get('/products/:productid/update', async (req, res) => {
-    const requiredproduct = products.findById(req.params.productid);
+    const requiredproduct = await products.findById(req.params.productid);
+    console.log(requiredproduct);
     res.render('products/update', { requiredproduct });
 })
 app.put('/products/:id', async (req, res) => {
     const kal = req.params.id;
     await products.findByIdAndUpdate(req.params.id, req.body, { runValidators: true });
-
     res.redirect(`/products/${kal}`);
+})
+app.get('/products/:id', async (req, res) => {
+    const rproduct = await products.findById(req.params.id);
+    res.render('products/desc', { rproduct });
 })
 app.post('/users', async (req, res) => {
     const newuser = new users(req.body);
