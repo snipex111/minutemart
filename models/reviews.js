@@ -2,9 +2,13 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const ReviewSchema = new Schema({
-    username: {
+    // username: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'User'
+    // },
+    product: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Product'
     },
     rating: {
         type: Number,

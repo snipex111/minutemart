@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const users = require('./models/users');
 const products = require('./models/products');
-
+const reviews = require('./models/reviews');
 
 
 // const userroutes = require('./routes/users');
@@ -53,13 +53,23 @@ app.post('/products', async (req, res) => {
     await newproduct.save();
     res.redirect('/products');
 })
+app.post('/products/:productid/newreview', async (req, res) => {
+    const nreview = await new reviews(req.body.review);
+    const kal = req.params.productid;
+    nreview.product = kal;
+
+    console.log(nreview);
+    await nreview.save();
+
+
+    res.redirect(`/products/${kal}`);
+})
 app.delete('/products/:productid', async (req, res) => {
     await products.findByIdAndDelete(req.params.productid);
     res.redirect('/products');
 })
 app.get('/products/:productid/update', async (req, res) => {
     const requiredproduct = await products.findById(req.params.productid);
-    console.log(requiredproduct);
     res.render('products/update', { requiredproduct });
 })
 app.put('/products/:id', async (req, res) => {
