@@ -56,11 +56,12 @@ app.post('/products', async (req, res) => {
 app.post('/products/:productid/newreview', async (req, res) => {
     const nreview = await new reviews(req.body.review);
     const kal = req.params.productid;
+    const curproduct = products.findById(kal);
     nreview.product = kal;
-
+    curproduct.reviews.push(nreview);
     console.log(nreview);
     await nreview.save();
-
+    await curproduct.save();
 
     res.redirect(`/products/${kal}`);
 })
@@ -78,8 +79,14 @@ app.put('/products/:id', async (req, res) => {
     res.redirect(`/products/${kal}`);
 })
 app.get('/products/:id', async (req, res) => {
-    const rproduct = await products.findById(req.params.id);
+    const rproduct = await products.findById(req.params.id).populate('reviews');
     res.render('products/desc', { rproduct });
+})
+
+app.delete('/products/:productid/reviews/:reviewid', async (req, res) => {
+    await products.findByIdAndUpdate(req.params.productid, { $pull: { reviews: req.params.reviewid } });
+    await reviews.findByIdAndDelete(req.params.reviewid);
+    res.redirect(`/products/${req.params.productid}`)
 })
 app.post('/users', async (req, res) => {
     const newuser = new users(req.body);
