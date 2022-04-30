@@ -56,10 +56,11 @@ app.post('/products', async (req, res) => {
 app.post('/products/:productid/newreview', async (req, res) => {
     const nreview = await new reviews(req.body.review);
     const kal = req.params.productid;
-    const curproduct = products.findById(kal);
+    const curproduct = await products.findById(kal);
     nreview.product = kal;
     curproduct.reviews.push(nreview);
     console.log(nreview);
+    console.log(curproduct);
     await nreview.save();
     await curproduct.save();
 
@@ -80,6 +81,7 @@ app.put('/products/:id', async (req, res) => {
 })
 app.get('/products/:id', async (req, res) => {
     const rproduct = await products.findById(req.params.id).populate('reviews');
+    console.log(rproduct);
     res.render('products/desc', { rproduct });
 })
 
