@@ -40,6 +40,11 @@ app.get('/users', async (req, res) => {
 app.get('/users/new', (req, res) => {
     res.render('users/create')
 })
+
+app.get('/users/login', (req, res) => {
+    res.render('users/login')
+})
+
 app.get('/products/new', (req, res) => {
     res.render('products/new')
 })
