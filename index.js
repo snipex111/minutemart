@@ -53,6 +53,23 @@ app.post('/products', async (req, res) => {
     await newproduct.save();
     res.redirect('/products');
 })
+
+app.get('/products/sort', async (req, res) => {
+    let productlist = await products.find();
+    //const opts = document.getElementById('sortOptions');
+    if (req.query.sortOptions == 'priceasc') {
+        productlist = await products.find().sort('price');
+        //opts.value = 'priceasc';
+    }
+    else if (req.query.sortOptions = 'pricedesc') {
+        productlist = await products.find().sort('-price');
+        //opts.value = 'pricedesc';
+    }
+    else {
+        //opts.value = 'default';
+    }
+    res.render('products/index', { productlist });
+})
 app.post('/products/:productid/newreview', async (req, res) => {
     const nreview = await new reviews(req.body.review);
     const kal = req.params.productid;
