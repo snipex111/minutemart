@@ -147,7 +147,6 @@ app.put('/products/:id', async (req, res) => {
 })
 app.get('/products/:id', async (req, res) => {
     const rproduct = await products.findById(req.params.id).populate('reviews');
-    console.log(rproduct);
     res.render('products/desc', { rproduct });
 })
 

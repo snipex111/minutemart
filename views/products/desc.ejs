@@ -11,7 +11,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
     <link rel="stylesheet" href="/stylesheets/stars.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;600&display=swap"
+        rel="stylesheet">
     <link href="/public/stylesheets/navbar.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/public/stylesheets/products_desc.css">
 </head>
 
 <body>
@@ -31,7 +36,7 @@
                 </p>
                 <div>
                     <form action="/products/<%=rproduct._id%>/update" method="get" class="d-inline">
-                        <button class="btn btn-info">Update</button>
+                        <button class="btn btn-outline-secondary">Update</button>
                     </form>
                     <form action="/products/<%=rproduct._id%>?_method=DELETE" method="post" class="d-inline">
                         <button class="btn btn-danger">Delete</button>
@@ -69,7 +74,7 @@
                         <textarea class="form-control" name="review[reviewbody]" id="exampleFormControlTextarea1"
                             rows="3"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-secondary">Submit</button>
                 </form>
                 <% if(rproduct.reviews.length){ %>
                 <% for(rev of rproduct.reviews) {%>
