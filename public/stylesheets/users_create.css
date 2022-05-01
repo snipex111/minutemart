@@ -1,0 +1,27 @@
+#bg1 {
+    background-image: url('/public/photos/register_left.jpg');
+    background-size: cover;
+}
+
+#bg2 {
+    background-image: url('/public/photos/register_centre.jpg');
+    background-size: cover;
+}
+
+#bg3 {
+    background-image: url('/public/photos/register_right.jpg');
+    background-size: cover;
+}
+
+#innerdiv {
+    background-color: rgba(0, 0, 0, 0.406);
+    background-size: cover;
+}
+
+h2 {
+    color: whitesmoke;
+}
+
+body {
+    font-family: 'Lora', serif;
+}

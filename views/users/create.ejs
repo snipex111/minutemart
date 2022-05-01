@@ -8,24 +8,42 @@
     <title>Create user</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/stylesheets/users_create.css">
 </head>
 
 <body>
-    <h3 class="mt-5 text-center">Create User</h3>
-    <div class="container">
-        <div class="row mt-5">
-            <div class="col-6 offset-3">
-                <form action="/users" method="post">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+    <div class="container-fluid vh-100 m-0 p-0">
+        <div class="row h-100 w-100 m-0">
+            <div class="h-100 w-100 col-lg-4 col-md-3 p-0 d-none d-md-block" id="bg1">
+
+            </div>
+            <div class="h-100 w-100 col-lg-4 col-md-6 col-12 p-0" id="bg2">
+                <div class="container-fluid">
+                    <div class="row mt-5">
+                        <div class="col-10 offset-1">
+                            <div class="w-100 p-4" id="innerdiv">
+                                <h2 class="text-center">Login</h2>
+                                <form action="/users" method="post">
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                                            placeholder="Email">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="password" class="form-control" id="password"
+                                            placeholder="Password">
+                                    </div>
+                                    <button type="submit" class="btn btn-outline-light">Submit</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+                </div>
+            </div>
+            <div class="h-100 w-100 col-lg-4 col-md-3 p-0 d-none d-md-block" id="bg3">
+
             </div>
         </div>
     </div>
