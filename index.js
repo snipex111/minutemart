@@ -17,6 +17,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
+app.use('/public', express.static('public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -51,6 +52,8 @@ app.get('/products/new', (req, res) => {
 
 app.get('/products/', async (req, res) => {
     const productlist = await products.find();
+    req.query.sortOptions = 'default';
+    req.query.filterOptions = 'none';
     res.render('products/index', { productlist })
 })
 app.post('/products', async (req, res) => {
@@ -60,7 +63,7 @@ app.post('/products', async (req, res) => {
 })
 
 app.get('/products/sort', async (req, res) => {
-    let productlist = await products.find();
+    let productlist;
     //const opts = document.getElementById('sortOptions');
     if (req.query.sortOptions == 'priceasc') {
         productlist = await products.find().sort('price');
@@ -71,8 +74,49 @@ app.get('/products/sort', async (req, res) => {
         //opts.value = 'pricedesc';
     }
     else {
+        productlist = await products.find();
         //opts.value = 'default';
     }
+    res.render('products/index', { productlist });
+})
+
+app.get('/products/filter', async (req, res) => {
+    let productlist;
+    let aggregate_options = [];
+    let filter = {};
+    console.log(req.query);
+    if (req.query.filterOptions && req.query.filterOptions != 'none') {
+        switch (req.query.filterOptions) {
+            case '0to499':
+                filter.price = { $gte: 0, $lt: 500 };
+                break;
+            case '500to999':
+                filter.price = { $gte: 500, $lt: 1000 };
+                break;
+            case '1000to1999':
+                filter.price = { $gte: 1000, $lt: 2000 };
+                break;
+            case '2000to2999':
+                filter.price = { $gte: 2000, $lt: 3000 };
+                break;
+            case '3000to4999':
+                filter.price = { $gte: 3000, $lt: 5000 };
+                break;
+            case '5000+':
+                filter.price = { $gte: 5000 };
+                break;
+            default:
+                filter.price = { $gte: 0 };
+                break;
+        }
+    }
+    aggregate_options.push({ $match: filter });
+    if (req.query.sortOptions == 'pricedesc') {
+        aggregate_options.push({ $sort: { 'price': -1 } });
+    } else if (req.query.sortOptions == 'priceasc') {
+        aggregate_options.push({ $sort: { 'price': 1 } });
+    }
+    productlist = await products.aggregate(aggregate_options);
     res.render('products/index', { productlist });
 })
 app.post('/products/:productid/newreview', async (req, res) => {

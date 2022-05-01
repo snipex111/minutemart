@@ -1,0 +1,13 @@
+#sidepane {
+    background-color: #f5f5f5;
+    padding-left: 50px;
+}
+
+#sortButton {
+    width: 100px;
+
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
