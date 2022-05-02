@@ -1,0 +1,17 @@
+body {
+    font-family: 'Lora', serif;
+}
+
+.vert img {
+    max-height: 200px;
+}
+
+.card-body {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.gotobutton {
+    padding-left: 0px;
+    padding-right: 0px;
+}

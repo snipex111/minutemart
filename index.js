@@ -83,6 +83,11 @@ app.get('/users/register', (req, res) => {
 app.get('/users/login', (req, res) => {
     res.render('users/login')
 })
+
+app.get('/users/cart', (req, res) => {
+    res.render('orders/cart')
+})
+
 app.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/users/login' }), async (req, res) => {
     console.log(1);
     req.flash('success', 'welcome back!');
