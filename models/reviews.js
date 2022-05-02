@@ -16,7 +16,12 @@ const ReviewSchema = new Schema({
     },
     reviewbody: {
         type: String
-    }
+    },
+    author:
+    {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
 });
 
 

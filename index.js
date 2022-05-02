@@ -21,7 +21,7 @@ app.use(methodOverride('_method'));
 app.use('/public', express.static('public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const { isLoggedIn } = require('./middleware');
+const { isLoggedIn, isAuthor, isReviewAuthor } = require('./middleware');
 
 
 //const dburl = process.env.DB_URL;
@@ -89,7 +89,7 @@ app.post('/login', passport.authenticate('local', { failureFlash: true, failureR
     res.redirect('/products');
 })
 
-app.post('/logout', async (req, res) => {
+app.get('/logout', async (req, res) => {
     req.logout();
     res.redirect('/users/login');
 })
@@ -104,8 +104,9 @@ app.get('/products/', async (req, res) => {
     req.query.filterOptions = 'none';
     res.render('products/index', { productlist })
 })
-app.post('/products', async (req, res) => {
+app.post('/products', isLoggedIn, async (req, res) => {
     const newproduct = new products(req.body);
+    newproduct.author = req.user._id;
     await newproduct.save();
     res.redirect('/products');
 })
@@ -170,11 +171,12 @@ app.get('/products/filter', async (req, res) => {
 
 
 
-app.post('/products/:productid/newreview', async (req, res) => {
+app.post('/products/:productid/newreview', isLoggedIn, async (req, res) => {
     const nreview = await new reviews(req.body.review);
     const kal = req.params.productid;
     const curproduct = await products.findById(kal);
     nreview.product = kal;
+    nreview.author = req.user._id;
     curproduct.reviews.push(nreview);
     console.log(nreview);
     console.log(curproduct);
@@ -185,25 +187,30 @@ app.post('/products/:productid/newreview', async (req, res) => {
 })
 
 
-app.delete('/products/:productid', async (req, res) => {
+app.delete('/products/:productid', isLoggedIn, isAuthor, async (req, res) => {
     await products.findByIdAndDelete(req.params.productid);
     res.redirect('/products');
 })
-app.get('/products/:productid/update', async (req, res) => {
+app.get('/products/:productid/update', isLoggedIn, isAuthor, async (req, res) => {
     const requiredproduct = await products.findById(req.params.productid);
     res.render('products/update', { requiredproduct });
 })
-app.put('/products/:id', async (req, res) => {
-    const kal = req.params.id;
-    await products.findByIdAndUpdate(req.params.id, req.body, { runValidators: true });
+app.put('/products/:productid', isLoggedIn, isAuthor, async (req, res) => {
+    const kal = req.params.productid;
+    await products.findByIdAndUpdate(req.params.productid, req.body, { runValidators: true });
     res.redirect(`/products/${kal}`);
 })
-app.get('/products/:id', async (req, res) => {
-    const rproduct = await products.findById(req.params.id).populate('reviews');
+app.get('/products/:productid', async (req, res) => {
+    const rproduct = await products.findById(req.params.productid).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    }).populate('author');
     res.render('products/desc', { rproduct });
 })
 
-app.delete('/products/:productid/reviews/:reviewid', async (req, res) => {
+app.delete('/products/:productid/reviews/:reviewid', isLoggedIn, isReviewAuthor, async (req, res) => {
     await products.findByIdAndUpdate(req.params.productid, { $pull: { reviews: req.params.reviewid } });
     await reviews.findByIdAndDelete(req.params.reviewid);
     res.redirect(`/products/${req.params.productid}`)
