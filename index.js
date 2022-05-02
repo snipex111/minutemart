@@ -4,11 +4,12 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const users = require('./models/users');
+const User = require('./models/users');
 const products = require('./models/products');
 const reviews = require('./models/reviews');
-
-
+const passport = require('passport');
+const localstrategy = require('passport-local');
+const flash = require('connect-flash');
 // const userroutes = require('./routes/users');
 // const productroutes = require('./routes/products');
 
@@ -20,6 +21,7 @@ app.use(methodOverride('_method'));
 app.use('/public', express.static('public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const { isLoggedIn } = require('./middleware');
 
 
 //const dburl = process.env.DB_URL;
@@ -29,24 +31,70 @@ db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
     console.log('Database connected');
 })
+const session = require('express-session');
+
+const sessionOptions = {
+    secret: 'thisisnotagoodsecret', resave: false, saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 500000000,
+        maxAge: 500000000, httpOnly: true
+    }
+}
+app.use(flash());
+
+app.use(session(sessionOptions));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localstrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+app.use((req, res, next) => {
+
+    res.locals.currentUser = req.user;
+    next();
+})
+
+app.post('/register', async (req, res) => {
+    try {
+        const { email, username, password } = req.body;
+        const user = new User({ email, username });
+        const registereduser = await User.register(user, password);
+        console.log(registereduser);
+        res.redirect('/products');
+    }
+    catch (err) {
+        req.flash('error', err.message);
+        res.redirect('/register');
+    }
+})
 
 app.get('/', (req, res) => {
     res.render('home');
 })
 app.get('/users', async (req, res) => {
-    const userlist = await users.find();
+    const userlist = await User.find();
     res.render('users/show', { userlist });
 })
 
-app.get('/users/new', (req, res) => {
+app.get('/users/register', (req, res) => {
     res.render('users/create')
 })
 
 app.get('/users/login', (req, res) => {
     res.render('users/login')
 })
+app.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/users/login' }), async (req, res) => {
+    console.log(1);
+    req.flash('success', 'welcome back!');
+    res.redirect('/products');
+})
 
-app.get('/products/new', (req, res) => {
+app.post('/logout', async (req, res) => {
+    req.logout();
+    res.redirect('/users/login');
+})
+
+app.get('/products/new', isLoggedIn, (req, res) => {
     res.render('products/new')
 })
 
@@ -119,6 +167,9 @@ app.get('/products/filter', async (req, res) => {
     productlist = await products.aggregate(aggregate_options);
     res.render('products/index', { productlist });
 })
+
+
+
 app.post('/products/:productid/newreview', async (req, res) => {
     const nreview = await new reviews(req.body.review);
     const kal = req.params.productid;
@@ -132,6 +183,8 @@ app.post('/products/:productid/newreview', async (req, res) => {
 
     res.redirect(`/products/${kal}`);
 })
+
+
 app.delete('/products/:productid', async (req, res) => {
     await products.findByIdAndDelete(req.params.productid);
     res.redirect('/products');
@@ -154,11 +207,6 @@ app.delete('/products/:productid/reviews/:reviewid', async (req, res) => {
     await products.findByIdAndUpdate(req.params.productid, { $pull: { reviews: req.params.reviewid } });
     await reviews.findByIdAndDelete(req.params.reviewid);
     res.redirect(`/products/${req.params.productid}`)
-})
-app.post('/users', async (req, res) => {
-    const newuser = new users(req.body);
-    await newuser.save();
-    res.redirect('/users');
 })
 
 
