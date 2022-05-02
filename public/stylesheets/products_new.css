@@ -1,0 +1,17 @@
+.container-fluid {
+    background-image: url(/public/photos/new_product_bg.jpg);
+    background-size: cover;
+}
+
+body {
+    font-family: 'Lora', serif;
+}
+
+#innerdiv {
+    background-color: rgba(0, 0, 0, 0.502);
+}
+
+h3,
+label {
+    color: whitesmoke;
+}
