@@ -18,20 +18,38 @@
 
 <body>
     <%- include('../partials/navbar') %>
-    <div class="container-fluid mt-5">
-        <div class="row">
-            <div class="mb-3 mt-3 col-sm-8 col-xl-6 offset-sm-2 offset-xl-3">
-                <h1>My Orders</h1>
+        <div class="container-fluid mt-5">
+            <div class="row">
+                <div class="mb-3 mt-3 col-sm-8 col-xl-6 offset-sm-2 offset-xl-3">
+                    <h1>My Orders</h1>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="card vert d-none d-sm-block mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3">
-                <div class="row g-0">
-                    <div class="col-sm-4">
-                        <img src="/public/photos/register_centre.jpg" class="img-fluid rounded start mt-2 mb-2"
-                            alt="Picture of product in your order">
+            <%for(let ord of curuser.orders){%>
+                <div class="row">
+                    <div class="card vert d-none d-sm-block mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3">
+                        <div class="row g-0">
+                            <div class="col-sm-4">
+                                <img src="/public/photos/register_centre.jpg" class="img-fluid rounded start mt-2 mb-2"
+                                    alt="Picture of product in your order">
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="card-body">
+                                    <h4 class="card-title">Received</h4>
+                                    <p class="card-text">Green Capsicum
+                                        <br>
+                                        <span class="text-muted">+ 5 more</span>
+                                    </p>
+                                    <p class="card-text"><b>
+                                            <%=ord.paymentamount%>
+                                        </b></p>
+                                    <a href="/orders/<%=ord._id%>" class="btn stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="card hor d-sm-none mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3 p-2">
+                        <img src="/public/photos/register_left.jpg" class="rounded"
+                            alt="Photo of product in your order">
                         <div class="card-body">
                             <h4 class="card-title">Received</h4>
                             <p class="card-text">Green Capsicum
@@ -42,20 +60,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card hor d-sm-none mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3 p-2">
-                <img src="/public/photos/register_left.jpg" class="rounded" alt="Photo of product in your order">
-                <div class="card-body">
-                    <h4 class="card-title">Received</h4>
-                    <p class="card-text">Green Capsicum
-                        <br>
-                        <span class="text-muted">+ 5 more</span>
-                    </p>
-                    <p class="card-text"><small class="text-muted">Ordered on: 01/05/2022</small></p>
-                </div>
-            </div>
+                <%}%>
         </div>
-    </div>
 </body>
 
 </html>

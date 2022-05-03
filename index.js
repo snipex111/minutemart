@@ -7,6 +7,7 @@ const methodOverride = require('method-override');
 const User = require('./models/users');
 const products = require('./models/products');
 const reviews = require('./models/reviews');
+const orders = require('./models/orders');
 const passport = require('passport');
 const localstrategy = require('passport-local');
 const flash = require('connect-flash');
@@ -67,7 +68,45 @@ app.post('/register', async (req, res) => {
         res.redirect('/register');
     }
 })
+app.post('/neworder', isLoggedIn, async (req, res) => {
 
+    let neworder1 = await new orders(req.body);
+    neworder1.username = req.user._id;
+    const curuser = await User.findById(req.user._id).populate('cart.item');
+    let orditems = [];
+    for (let x of curuser.cart) {
+        orditems.push(x);
+    }
+    neworder1.ordereditems = orditems;
+    let val = 0;
+    for (let x of curuser.cart) {
+        val += (x.quantity) * (x.item.price);
+    }
+    neworder1.paymentamount = val;
+    console.log(neworder1);
+
+    while (curuser.cart.length) {
+        curuser.cart.pop();
+    }
+    await neworder1.save();
+    curuser.orders.push(neworder1);
+    await curuser.save();
+    res.redirect('/myorders');
+})
+app.get('/myorders', isLoggedIn, async (req, res) => {
+
+    const curuser = await User.findById(req.user._id).populate('orders');
+
+
+    res.render('orders/index', { curuser });
+
+});
+
+app.get('/orders/:orderid', isLoggedIn, async (req, res) => {
+    const curorder = await orders.findById(req.params.orderid).populate('ordereditems.item');
+    res.render('orders/desc', { curorder });
+
+})
 app.get('/', (req, res) => {
     res.render('home');
 })
@@ -90,6 +129,7 @@ app.get('/mycart', isLoggedIn, async (req, res) => {
 
     res.render('orders/cart', { curuser })
 })
+
 
 app.delete('/mycart/delete/:itemid', async (req, res) => {
     await User.findByIdAndUpdate(req.user._id, { $pull: { cart: { _id: req.params.itemid } } }, { new: true });

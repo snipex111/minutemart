@@ -7,21 +7,15 @@ const OrderSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    deliverystatus: {
-        type: String,
-        required: true,
-        enum: ['Delivered', 'Shipping', 'Processing']
-    },
-    paymentstatus: {
-        type: String,
-        required: true,
-        enum: ['Paid', 'COD']
-    },
-    items: [
+    ordereditems: [
         {
-            type: Schema.Types.ObjectId,
-            ref: 'Product'
+            item: {
+                type: Schema.Types.ObjectId,
+                ref: 'Product'
+            },
+            quantity: Number
         }
+
     ],
     paymentamount: {
         type: Number,
