@@ -21,6 +21,15 @@ const UserSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Order'
         }
+    ],
+    cart: [
+        {
+            item: {
+                type: Schema.Types.ObjectId,
+                ref: 'Product'
+            },
+            quantity: Number
+        }
     ]
 });
 

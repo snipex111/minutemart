@@ -84,8 +84,66 @@ app.get('/users/login', (req, res) => {
     res.render('users/login')
 })
 
-app.get('/users/cart', (req, res) => {
-    res.render('orders/cart')
+app.get('/mycart', isLoggedIn, async (req, res) => {
+    const curuser = await User.findById(req.user._id).populate('cart.item');
+    //console.log(curuser.cart[0]._id);
+
+    res.render('orders/cart', { curuser })
+})
+
+app.delete('/mycart/delete/:itemid', async (req, res) => {
+    await User.findByIdAndUpdate(req.user._id, { $pull: { cart: { _id: req.params.itemid } } }, { new: true });
+
+    res.redirect('/mycart');
+})
+app.put('/mycart/inc/:itemid', async (req, res) => {
+    let curuser = await User.findById(req.user._id);
+    const { itemid } = req.params;
+    function findItem(it) {
+        return it._id == itemid;
+    }
+    let reqitem = curuser.cart.find(findItem);
+    reqitem.quantity++;
+
+    await curuser.save();
+    res.redirect('/mycart');
+})
+app.put('/mycart/dec/:itemid', async (req, res) => {
+    let curuser = await User.findById(req.user._id);
+    const { itemid } = req.params;
+    function findItem(it) {
+        return it._id == itemid;
+    }
+    let reqitem = curuser.cart.find(findItem);
+    if (reqitem.quantity > 1) {
+        reqitem.quantity--;
+        await curuser.save();
+    }
+    else {
+        await User.findByIdAndUpdate(req.user._id, { $pull: { cart: { _id: req.params.itemid } } }, { new: true });
+    }
+
+
+    res.redirect('/mycart');
+})
+
+app.get('/users/desc', (req, res) => {
+    res.render('orders/desc')
+})
+app.get('/users/index', (req, res) => {
+    res.render('orders/index')
+})
+
+app.post('/orders/addtocart/:productid', isLoggedIn, async (req, res) => {
+    const curuser = await User.findById(req.user._id);
+    let addproduct = {};
+    addproduct.item = req.params.productid;
+
+    addproduct.quantity = req.body.quantity;
+
+    curuser.cart.push(addproduct);
+    await curuser.save();
+    res.redirect(`/products/${req.params.productid}`);
 })
 
 app.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/users/login' }), async (req, res) => {
