@@ -19,11 +19,9 @@
 
 <body>
     <%- include('../partials/navbar') %>
-    <div class="contianer-fluid">
-        <div class="row mt-5">
+    <div class="contianer-fluid mt-3">
+        <div class="row">
             <div class="col-2" id="sidepane">
-                <br>
-                <br>
                 <form action="/products/sort" method="get">
                     <label for="sortOptions">Sort By:</label>
                     <br>
@@ -57,10 +55,6 @@
             <div class="col-10">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-12">
-                            <br>
-                            <br>
-                        </div>
                         <% for(let product of productlist) {%>
                         <div class="col-md-3 col-sm-6 col-12 mb-3">
                             <div class="card">

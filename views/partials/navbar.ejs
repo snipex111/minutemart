@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark navbar-expand-lg main-navbar fixed-top" id="mainNavbar">
+<nav class="navbar navbar-dark navbar-expand-lg main-navbar sticky-top" id="mainNavbar">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">MinuteMart</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
@@ -18,12 +18,15 @@
         </div>
         <div class="navbar-nav ml-auto">
             <% if(!currentUser) {%>
-                <a class="nav-link" href="/users/login">Login</a>
-                <a class="nav-link" href="/users/register">Register</a>
-                <% } else {%>
-                    <a class="nav-link" href="/mycart">My cart</a>
-                    <a class="nav-link" href="/logout">Logout</a>
-                    <% } %>
+            <a class="nav-link" href="/users/login">Login</a>
+            <a class="nav-link" href="/users/register">Register</a>
+            <% } else {%>
+            <a class="nav-link" href="/mycart">My Cart</a>
+            <a class="nav-link" href="/myorders">My Orders</a>
+            <a class="nav-link" href="/myproducts">My Products</a>
+
+            <a class="nav-link" href="/logout">Logout</a>
+            <% } %>
         </div>
     </div>
 </nav>
