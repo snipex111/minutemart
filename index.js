@@ -104,8 +104,11 @@ app.get('/myorders', isLoggedIn, async (req, res) => {
 
 app.get('/myproducts', isLoggedIn, async (req, res) => {
     const productlist = await products.find({ author: req.user._id });
-    let val = 0;
-    res.render('products/index', { productlist, val })
+    app.locals.sortOptions = 'none';
+    app.locals.pricemin = 0;
+    app.locals.pricemax = 1000000000000000;
+    app.locals.val = 0;
+    res.render('products/index', { productlist })
 })
 
 app.get('/orders/:orderid', isLoggedIn, async (req, res) => {
@@ -209,23 +212,17 @@ app.get('/products/new', isLoggedIn, (req, res) => {
 
 app.get('/products/', async (req, res) => {
     const productlist = await products.find();
-<<<<<<< HEAD
     app.locals.sortOptions = 'none';
     app.locals.pricemin = 0;
     app.locals.pricemax = 1000000000000000;
+    app.locals.val = 1;
     res.render('products/index', { productlist })
-=======
-    req.query.sortOptions = 'default';
-    req.query.filterOptions = 'none';
-    let val = 1;
-    res.render('products/index', { productlist, val })
->>>>>>> 07dfaeafa83e43ce8b1620e2835a6a05d293149b
 })
 app.post('/products', isLoggedIn, async (req, res) => {
     const newproduct = new products(req.body);
     newproduct.author = req.user._id;
     await newproduct.save();
-    res.redirect('/products');
+    res.redirect('/myproducts');
 })
 
 app.get('/products/sort', async (req, res) => {
@@ -233,6 +230,9 @@ app.get('/products/sort', async (req, res) => {
     let aggregate_options = [];
     let filter = {};
     filter.price = { $gte: app.locals.pricemin, $lt: app.locals.pricemax };
+    if (!app.locals.val) {
+        filter.author = req.user._id;
+    }
     aggregate_options.push({ $match: filter });
     if (req.query.sortOptions == 'priceasc') {
         app.locals.sortOptions = 'priceasc';
@@ -253,7 +253,10 @@ app.get('/products/filter', async (req, res) => {
     let productlist;
     let aggregate_options = [];
     let filter = {};
-    if (req.query.filterOptions && req.query.filterOptions != 'none') {
+    if (!app.locals.val) {
+        filter.author = req.user._id;
+    }
+    if (req.query.filterOptions) {
         switch (req.query.filterOptions) {
             case '0to499':
                 app.locals.pricemin = 0;

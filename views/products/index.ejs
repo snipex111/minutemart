@@ -19,24 +19,13 @@
 
 <body>
     <%- include('../partials/navbar') %>
-        <div class="contianer-fluid mt-3">
-            <div class="row">
-                <div class="col-2" id="sidepane">
-                    <form action="/products/sort" method="get">
-                        <label for="sortOptions">Sort By:</label>
-                        <br>
-                        <select class="form-select" aria-label="Default select example" id="sortOptions"
-                            name="sortOptions">
-                            <option value="default">Default</option>
-                            <option value="priceasc">Price: Low to High</option>
-                            <option value="pricedesc">Price: High to Low</option>
-                        </select>
-                        <br>
-                        <br>
-                        <button class="btn btn-sm btn-outline-secondary" id="sortButton">Sort</button>
-                    </form>
+    <div class="contianer-fluid mt-3">
+        <div class="row">
+            <div class="col-2" id="sidepane">
+                <form action="/products/sort" method="get">
+                    <label for="sortOptions">Sort By:</label>
                     <br>
-<<<<<<< HEAD
+
                     <select class="form-select" aria-label="Default select example" id="sortOptions" name="sortOptions">
                         <option value="default" <%if(sortOptions=='default'){%>selected<% } %>>Default</option>
                         <option value="priceasc" <%if(sortOptions=='priceasc'){%>selected<% } %>>Price: Low to
@@ -54,6 +43,7 @@
                     <br>
                     <select class="form-select" aria-label="Default select example" id="filterOptions"
                         name="filterOptions">
+                        <option value="none" <%if(pricemin==0){%>selected<% } %>>All</option>
                         <option value="0to499" <%if(pricemax==500){%>selected<% } %>>0 - 499</option>
                         <option value="500to999" <%if(pricemax==1000){%>selected<% } %>>500 - 999</option>
                         <option value="1000to1999" <%if(pricemax==2000){%>selected<% } %>>1000 - 1999</option>
@@ -70,64 +60,30 @@
                 <div class="container-fluid">
                     <div class="row">
                         <% for(let product of productlist) {%>
+                        <%if(!val||!currentUser || !product.author.equals(currentUser._id)){%>
                         <div class="col-md-3 col-sm-6 col-12 mb-3">
                             <div class="card">
                                 <img src="<%=product.image  %> " class="card-img-top img-fluid" style="height:200px;"
                                     alt="demo image">
                                 <div class="card-body">
-                                    <h5 class="card-title"><%=product.name %> </h5>
-                                    <p class="card-text"><%=product.price %></p>
+                                    <h5 class="card-title">
+                                        <%=product.name %>
+                                    </h5>
+                                    <p class="card-text">
+                                        <%=product.price %>
+                                    </p>
                                     <a href="/products/<%=product._id %> " class="btn stretched-link"></a>
                                     <!-- <p class="card-text"><%=product.description %></p> -->
                                 </div>
                             </div>
-=======
-                    <form action="/products/filter" method="get">
-                        <label for="filterOptions">Price:</label>
-                        <br>
-                        <select class="form-select" aria-label="Default select example" id="filterOptions"
-                            name="filterOptions">
-                            <option value="0to499">0 - 499</option>
-                            <option value="500to999">500 - 999</option>
-                            <option value="1000to1999">1000 - 1999</option>
-                            <option value="2000to2999">2000 - 2999</option>
-                            <option value="3000to4999">3000 - 4999</option>
-                            <option value="5000+">5000+</option>
-                        </select>
-                        <br>
-                        <br>
-                        <button class="btn btn-sm btn-outline-secondary" id="sortButton">Filter</button>
-                    </form>
-                </div>
-                <div class="col-10">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <% for(let product of productlist) {%>
-                                <%if(!val||!currentUser || !product.author.equals(currentUser._id)){%>
-                                    <div class="col-md-3 col-sm-6 col-12 mb-3">
-                                        <div class="card">
-                                            <img src="<%=product.image  %> " class="card-img-top img-fluid"
-                                                style="height:200px;" alt="demo image">
-                                            <div class="card-body">
-                                                <h5 class="card-title">
-                                                    <%=product.name %>
-                                                </h5>
-                                                <p class="card-text">
-                                                    <%=product.price %>
-                                                </p>
-                                                <a href="/products/<%=product._id %> " class="btn stretched-link"></a>
-                                                <!-- <p class="card-text"><%=product.description %></p> -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <%}%>
-                                        <% } %>
->>>>>>> 07dfaeafa83e43ce8b1620e2835a6a05d293149b
                         </div>
+                        <%}%>
+                        <% } %>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </body>
 
 </html>
