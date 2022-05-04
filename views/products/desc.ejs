@@ -20,138 +20,139 @@
 
 <body>
     <%- include('../partials/navbar') %>
-    <div class="container-fluid">
-        <div class="row mt-5">
-            <div class="col-2 offset-2">
-                <img src="<%=rproduct.image%>" alt="">
-            </div>
-            <div class="col-4 offset-3">
-                <h1>
-                    <%= rproduct.name %>
-                </h1>
-                <p>
-                    <%=rproduct.price %>
-                </p>
-                <p>
-                    Sold by:<%=rproduct.author.username%>
-                </p>
+        <div class="container-fluid">
+            <div class="row mt-5">
+                <div class="col-2 offset-2">
+                    <img src="<%=rproduct.image%>" alt="">
+                </div>
+                <div class="col-4 offset-3">
+                    <h1>
+                        <%= rproduct.name %>
+                    </h1>
+                    <p>
+                        <%=rproduct.price %>
+                    </p>
+                    <p>
+                        Sold by:<%=rproduct.author.username%>
+                    </p>
 
-                <div>
-                    <%if(currentUser && rproduct.author.equals(currentUser._id)){%>
-                    <form action="/products/<%=rproduct._id%>/update" method="get" class="d-inline">
-                        <button class="btn btn-outline-secondary">Update</button>
-                    </form>
-                    <form action="/products/<%=rproduct._id%>?_method=DELETE" method="post" class="d-inline">
-                        <button class="btn btn-danger">Delete</button>
-                    </form>
-                    <%}%>
-                    </div>
-
-                    <%if(currentUser){%>
                     <div>
-                        <form action="/orders/addtocart/<%=rproduct._id%>" method="post">
-                            <p class="card-text">
-                                <button type="button" id="minusbtn" class="btn btn-outline-secondary">-</button>
-                                &emsp;
-                                <input type="text" id="quantity" name="quantity" class="form-control" value="0">
-                                &emsp;
-                                <button id="plusbtn" class="btn btn-outline-secondary" type="button">+
-                                </button>
-                            </p>
-                            <script>
-                                let pbtn = document.getElementById("plusbtn");
-                                let mnbtn = document.getElementById("minusbtn");
-                                pbtn.onclick = function () {
-                                    myFunction()
-                                };
-
-                                function myFunction() {
-                                    let val = parseInt(document.getElementById("quantity").value);
-                                    val++;
-                                    document.getElementById("quantity").value = val;
-                                }
-                                mnbtn.onclick = function () {
-                                    myFunction1()
-                                };
-
-                                function myFunction1() {
-                                    let val = parseInt(document.getElementById("quantity").value);
-                                    if (val > 0)
-                                        val--;
-                                    document.getElementById("quantity").value = val;
-                                }
-                            </script>
-
-                            <button name="addtocart" class="btn btn-secondary">Add to Cart</button>
-                        </form>
+                        <%if(currentUser && rproduct.author.equals(currentUser._id)){%>
+                            <form action="/products/<%=rproduct._id%>/update" method="get" class="d-inline">
+                                <button class="btn btn-outline-secondary">Update</button>
+                            </form>
+                            <form action="/products/<%=rproduct._id%>?_method=DELETE" method="post" class="d-inline">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+                            <%}%>
                     </div>
-                    <%}%>
+
+                    <%if(currentUser && ! rproduct.author.equals(currentUser._id)){%>
+                        <div>
+                            <form action="/orders/addtocart/<%=rproduct._id%>" method="post">
+                                <p class="card-text">
+                                    <button type="button" id="minusbtn" class="btn btn-outline-secondary">-</button>
+                                    &emsp;
+                                    <input type="text" id="quantity" name="quantity" class="form-control" value="0">
+                                    &emsp;
+                                    <button id="plusbtn" class="btn btn-outline-secondary" type="button">+
+                                    </button>
+                                </p>
+                                <script>
+                                    let pbtn = document.getElementById("plusbtn");
+                                    let mnbtn = document.getElementById("minusbtn");
+                                    pbtn.onclick = function () {
+                                        myFunction()
+                                    };
+
+                                    function myFunction() {
+                                        let val = parseInt(document.getElementById("quantity").value);
+                                        val++;
+                                        document.getElementById("quantity").value = val;
+                                    }
+                                    mnbtn.onclick = function () {
+                                        myFunction1()
+                                    };
+
+                                    function myFunction1() {
+                                        let val = parseInt(document.getElementById("quantity").value);
+                                        if (val > 0)
+                                            val--;
+                                        document.getElementById("quantity").value = val;
+                                    }
+                                </script>
+
+                                <button name="addtocart" class="btn btn-secondary">Add to Cart</button>
+                            </form>
+                        </div>
+                        <%}%>
                             <p>
                                 <%=rproduct.description %>
-                    </p>
+                            </p>
                 </div>
             </div>
             <div class="row mt-4">
                 <div class="offset-2 col-7">
                     <h2>Reviews</h2>
-                    <%if(currentUser){%>
-                    <form action="/products/<%=rproduct._id%>/newreview" method="post">
-                        <fieldset class="starability-basic">
-                            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0"
-                                checked aria-label="No rating." />
-                            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                            <label for="first-rate1" title="Terrible">1 star</label>
-                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                            <label for="first-rate2" title="Not good">2 stars</label>
-                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                            <label for="first-rate3" title="Average">3 stars</label>
-                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                            <label for="first-rate4" title="Very good">4 stars</label>
-                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                            <label for="first-rate5" title="Amazing">5 stars</label>
-                        </fieldset>
+                    <%if(currentUser && ! rproduct.author.equals(currentUser._id)){%>
+                        <form action="/products/<%=rproduct._id%>/newreview" method="post">
+                            <fieldset class="starability-basic">
+                                <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0"
+                                    checked aria-label="No rating." />
+                                <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                                <label for="first-rate1" title="Terrible">1 star</label>
+                                <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                                <label for="first-rate2" title="Not good">2 stars</label>
+                                <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                                <label for="first-rate3" title="Average">3 stars</label>
+                                <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                                <label for="first-rate4" title="Very good">4 stars</label>
+                                <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                                <label for="first-rate5" title="Amazing">5 stars</label>
+                            </fieldset>
 
-                        <div class="mb-3">
-                            <label for="exampleFormControlTextarea1" class="form-label">
-                                <h4>Review description</h4>
-                            </label>
-                            <textarea class="form-control" name="review[reviewbody]" id="exampleFormControlTextarea1"
-                                rows="3"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-secondary">Submit</button>
-                    </form>
-                    <%}%>
+                            <div class="mb-3">
+                                <label for="exampleFormControlTextarea1" class="form-label">
+                                    <h4>Review description</h4>
+                                </label>
+                                <textarea class="form-control" name="review[reviewbody]"
+                                    id="exampleFormControlTextarea1" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Submit</button>
+                        </form>
+                        <%}%>
                             <% if(rproduct.reviews.length){ %>
-                    <% for(rev of rproduct.reviews) {%>
-                    <div class="card mt-3">
-                        <div class="card-body">
-                            <p class="starability-result" data-rating="<%= rev.rating %>"></p>
-                            <p>
-                                <b>
-                                    <%=rev.author.username%>
-                                </b>
-                            </p>
-                            <p class="card-text">
-                                <%=rev.reviewbody%>
-                            </p>
-                        </div>
-                        <div class="card-body">
-                            <%if(currentUser && rev.author.equals(currentUser._id)){%>
-                            <form action="/products/<%=rproduct._id%>/reviews/<%= rev._id %>?_method=DELETE"
-                                method="post" class="d-inline">
-                                <button class="btn btn-danger">Delete</button>
-                            </form>
-                            <%}%>
+                                <% for(rev of rproduct.reviews) {%>
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <p class="starability-result" data-rating="<%= rev.rating %>"></p>
+                                            <p>
+                                                <b>
+                                                    <%=rev.author.username%>
+                                                </b>
+                                            </p>
+                                            <p class="card-text">
+                                                <%=rev.reviewbody%>
+                                            </p>
+                                        </div>
+                                        <div class="card-body">
+                                            <%if(currentUser && rev.author.equals(currentUser._id)){%>
+                                                <form
+                                                    action="/products/<%=rproduct._id%>/reviews/<%= rev._id %>?_method=DELETE"
+                                                    method="post" class="d-inline">
+                                                    <button class="btn btn-danger">Delete</button>
+                                                </form>
+                                                <%}%>
                                         </div>
                                     </div>
                                     <% } %>
-                            <% } %>
+                                        <% } %>
 
 
-                        </div>
-
-                    </div>
                 </div>
+
+            </div>
+        </div>
 </body>
 
 </html>

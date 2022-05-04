@@ -104,7 +104,8 @@ app.get('/myorders', isLoggedIn, async (req, res) => {
 
 app.get('/myproducts', isLoggedIn, async (req, res) => {
     const productlist = await products.find({ author: req.user._id });
-    res.render('products/index', { productlist })
+    let val = 0;
+    res.render('products/index', { productlist, val })
 })
 
 app.get('/orders/:orderid', isLoggedIn, async (req, res) => {
@@ -210,7 +211,8 @@ app.get('/products/', async (req, res) => {
     const productlist = await products.find();
     req.query.sortOptions = 'default';
     req.query.filterOptions = 'none';
-    res.render('products/index', { productlist })
+    let val = 1;
+    res.render('products/index', { productlist, val })
 })
 app.post('/products', isLoggedIn, async (req, res) => {
     const newproduct = new products(req.body);
