@@ -102,6 +102,11 @@ app.get('/myorders', isLoggedIn, async (req, res) => {
 
 });
 
+app.get('/myproducts', isLoggedIn, async (req, res) => {
+    const productlist = await products.find({ author: req.user._id });
+    res.render('products/index', { productlist })
+})
+
 app.get('/orders/:orderid', isLoggedIn, async (req, res) => {
     const curorder = await orders.findById(req.params.orderid).populate('ordereditems.item');
     res.render('orders/desc', { curorder });
