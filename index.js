@@ -104,7 +104,8 @@ app.get('/myorders', isLoggedIn, async (req, res) => {
 
 app.get('/myproducts', isLoggedIn, async (req, res) => {
     const productlist = await products.find({ author: req.user._id });
-    res.render('products/index', { productlist })
+    let val = 0;
+    res.render('products/index', { productlist, val })
 })
 
 app.get('/orders/:orderid', isLoggedIn, async (req, res) => {
@@ -208,10 +209,17 @@ app.get('/products/new', isLoggedIn, (req, res) => {
 
 app.get('/products/', async (req, res) => {
     const productlist = await products.find();
+<<<<<<< HEAD
     app.locals.sortOptions = 'none';
     app.locals.pricemin = 0;
     app.locals.pricemax = 1000000000000000;
     res.render('products/index', { productlist })
+=======
+    req.query.sortOptions = 'default';
+    req.query.filterOptions = 'none';
+    let val = 1;
+    res.render('products/index', { productlist, val })
+>>>>>>> 07dfaeafa83e43ce8b1620e2835a6a05d293149b
 })
 app.post('/products', isLoggedIn, async (req, res) => {
     const newproduct = new products(req.body);
