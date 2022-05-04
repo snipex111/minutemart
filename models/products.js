@@ -20,6 +20,9 @@ const ProductSchema = new Schema({
         required: true
 
     },
+    avgrating: {
+        type: Number
+    },
     author:
     {
         type: Schema.Types.ObjectId,

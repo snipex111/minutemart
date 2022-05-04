@@ -221,6 +221,7 @@ app.get('/products/', async (req, res) => {
 app.post('/products', isLoggedIn, async (req, res) => {
     const newproduct = new products(req.body);
     newproduct.author = req.user._id;
+    newproduct.avgrating = 0;
     await newproduct.save();
     res.redirect('/myproducts');
 })
@@ -307,6 +308,8 @@ app.post('/products/:productid/newreview', isLoggedIn, async (req, res) => {
     const curproduct = await products.findById(kal);
     nreview.product = kal;
     nreview.author = req.user._id;
+    let rating = (curproduct.reviews.length) * (curproduct.avgrating);
+    curproduct.avgrating = (rating + nreview.rating) / (curproduct.reviews.length + 1);
     curproduct.reviews.push(nreview);
     console.log(nreview);
     console.log(curproduct);

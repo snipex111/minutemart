@@ -21,16 +21,29 @@
 <body>
     <%- include('../partials/navbar') %>
     <div class="container-fluid">
-        <div class="row mt-5">
+        <div class="row mt-5 me-3">
             <div class="col-3 offset-2">
                 <img src="<%=rproduct.image%>" class="img-fluid" alt="">
             </div>
-            <div class="col-4 offset-1">
+            <div class="col-5">
                 <h1>
                     <%= rproduct.name %>
                 </h1>
                 <p>
-                    <%=rproduct.price %>
+                    <% if(rproduct.reviews.length>1){ %>
+                    <a href="#reviewhead"><%=rproduct.avgrating %> <span class="star">&bigstar;</span></a>
+                    &ensp;<a href="#reviewhead"><small><%=rproduct.reviews.length  %> reviews</small></a>
+                    <% }else if(rproduct.reviews.length){ %>
+                    <a href="#reviewhead"><%=rproduct.avgrating %> <span class="star">&bigstar;</span></a>
+                    &ensp;<a href="#reviewhead"><small><%=rproduct.reviews.length  %> review</small></a>
+                    <% }else{ %>
+                    Unrated &ensp;<small>No reviews yet</small>
+                    <% } %>
+                </p>
+                <p>
+                    <b>
+                        <%=rproduct.price %>
+                    </b>
                 </p>
                 <p>
                     Sold by:<%=rproduct.author.username%>
@@ -93,7 +106,7 @@
             </div>
             <div class="row mt-4">
                 <div class="offset-2 col-7">
-                    <h2>Reviews</h2>
+                    <h2 id="reviewhead">Reviews</h2>
                     <%if(currentUser && ! rproduct.author.equals(currentUser._id)){%>
                     <form action="/products/<%=rproduct._id%>/newreview" method="post">
                         <fieldset class="starability-basic">
@@ -121,37 +134,48 @@
                         <button type="submit" class="btn btn-secondary">Submit</button>
                     </form>
                     <%}%>
-                            <% if(rproduct.reviews.length){ %>
+                    <% if(rproduct.reviews.length){ %>
                     <% for(rev of rproduct.reviews) {%>
                     <div class="card mt-3">
                         <div class="card-body">
                             <p class="starability-result" data-rating="<%= rev.rating %>"></p>
-                            <p>
+                            <p class="card-text">
                                 <b>
                                     <%=rev.author.username%>
                                 </b>
-                            </p>
-                            <p class="card-text">
+                                <br>
                                 <%=rev.reviewbody%>
                             </p>
                         </div>
+
+                        <%if(currentUser && rev.author.equals(currentUser._id)){%>
                         <div class="card-body">
-                            <%if(currentUser && rev.author.equals(currentUser._id)){%>
                             <form action="/products/<%=rproduct._id%>/reviews/<%= rev._id %>?_method=DELETE"
                                 method="post" class="d-inline">
                                 <button class="btn btn-danger">Delete</button>
                             </form>
-                            <%}%>
-                                        </div>
-                                    </div>
-                                    <% } %>
-                            <% } %>
-
-
                         </div>
-
                     </div>
+                    <%}%>
+                        
                 </div>
+                    <% } %>
+                    <% }else{ %>
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <p class="card-text">
+                                No reviews yet
+                                <br>
+                                <% if(!currentUser) {%>
+                                <a href="/users/login">Log in</a> to leave a review!
+                                <% } %>
+                            </p>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
 </body>
 
 </html>

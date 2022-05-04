@@ -70,7 +70,19 @@
                                         <%=product.name %>
                                     </h5>
                                     <p class="card-text">
-                                        <%=product.price %>
+                                        <% if(product.reviews.length>1){ %>
+                                        <%=product.avgrating %> <span class="star">&bigstar;</span>
+                                        &ensp;<small><%=product.reviews.length  %>
+                                            reviews</small>
+                                        <% }else if(product.reviews.length){ %>
+                                        <%=product.avgrating %> <span class="star">&bigstar;</span>
+                                        &ensp;<small><%=product.reviews.length  %>
+                                            review</small>
+                                        <% }else{ %>
+                                        Unrated &ensp;<small>No reviews yet</small>
+                                        <% } %>
+                                        <br>
+                                        <b><%=product.price %></b>
                                     </p>
                                     <a href="/products/<%=product._id %> " class="btn stretched-link"></a>
                                     <!-- <p class="card-text"><%=product.description %></p> -->
