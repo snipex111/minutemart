@@ -208,8 +208,9 @@ app.get('/products/new', isLoggedIn, (req, res) => {
 
 app.get('/products/', async (req, res) => {
     const productlist = await products.find();
-    req.query.sortOptions = 'default';
-    req.query.filterOptions = 'none';
+    app.locals.sortOptions = 'none';
+    app.locals.pricemin = 0;
+    app.locals.pricemax = 1000000000000000;
     res.render('products/index', { productlist })
 })
 app.post('/products', isLoggedIn, async (req, res) => {
@@ -221,19 +222,22 @@ app.post('/products', isLoggedIn, async (req, res) => {
 
 app.get('/products/sort', async (req, res) => {
     let productlist;
-    //const opts = document.getElementById('sortOptions');
+    let aggregate_options = [];
+    let filter = {};
+    filter.price = { $gte: app.locals.pricemin, $lt: app.locals.pricemax };
+    aggregate_options.push({ $match: filter });
     if (req.query.sortOptions == 'priceasc') {
-        productlist = await products.find().sort('price');
-        //opts.value = 'priceasc';
+        app.locals.sortOptions = 'priceasc';
+        aggregate_options.push({ $sort: { 'price': 1 } });
     }
     else if (req.query.sortOptions = 'pricedesc') {
-        productlist = await products.find().sort('-price');
-        //opts.value = 'pricedesc';
+        app.locals.sortOptions = 'pricedesc';
+        aggregate_options.push({ $sort: { 'price': -1 } });
     }
     else {
-        productlist = await products.find();
-        //opts.value = 'default';
+        app.locals.sortOptions = 'default';
     }
+    productlist = await products.aggregate(aggregate_options);
     res.render('products/index', { productlist });
 })
 
@@ -241,36 +245,43 @@ app.get('/products/filter', async (req, res) => {
     let productlist;
     let aggregate_options = [];
     let filter = {};
-    console.log(req.query);
     if (req.query.filterOptions && req.query.filterOptions != 'none') {
         switch (req.query.filterOptions) {
             case '0to499':
-                filter.price = { $gte: 0, $lt: 500 };
+                app.locals.pricemin = 0;
+                app.locals.pricemax = 500;
                 break;
             case '500to999':
-                filter.price = { $gte: 500, $lt: 1000 };
+                app.locals.pricemin = 500;
+                app.locals.pricemax = 1000;
                 break;
             case '1000to1999':
-                filter.price = { $gte: 1000, $lt: 2000 };
+                app.locals.pricemin = 1000;
+                app.locals.pricemax = 2000;
                 break;
             case '2000to2999':
-                filter.price = { $gte: 2000, $lt: 3000 };
+                app.locals.pricemin = 2000;
+                app.locals.pricemax = 3000;
                 break;
             case '3000to4999':
-                filter.price = { $gte: 3000, $lt: 5000 };
+                app.locals.pricemin = 3000;
+                app.locals.pricemax = 5000;
                 break;
             case '5000+':
-                filter.price = { $gte: 5000 };
+                app.locals.pricemin = 5000;
+                app.locals.pricemax = 1000000000000000;
                 break;
             default:
-                filter.price = { $gte: 0 };
+                app.locals.pricemin = 0;
+                app.locals.pricemax = 1000000000000000;
                 break;
         }
     }
+    filter.price = { $gte: app.locals.pricemin, $lt: app.locals.pricemax };
     aggregate_options.push({ $match: filter });
-    if (req.query.sortOptions == 'pricedesc') {
+    if (app.locals.sortOptions == 'pricedesc') {
         aggregate_options.push({ $sort: { 'price': -1 } });
-    } else if (req.query.sortOptions == 'priceasc') {
+    } else if (app.locals.sortOptions == 'priceasc') {
         aggregate_options.push({ $sort: { 'price': 1 } });
     }
     productlist = await products.aggregate(aggregate_options);
