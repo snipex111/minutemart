@@ -8,7 +8,7 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
 
                 <a class="nav-link" href="/products/">All <span class="sr-only">(current)</span></a>
             </li>
@@ -19,15 +19,15 @@
         </ul>
         <div class="navbar-nav ml-auto">
             <% if(!currentUser) {%>
-                <a class="nav-link" href="/users/login">Login</a>
-                <a class="nav-link" href="/users/register">Register</a>
-                <% } else {%>
-                    <a class="nav-link" href="/mycart">My Cart</a>
-                    <a class="nav-link" href="/myorders">My Orders</a>
-                    <a class="nav-link" href="/myproducts">My Products</a>
+            <a class="nav-link" href="/users/login">Login</a>
+            <a class="nav-link" href="/users/register">Register</a>
+            <% } else {%>
+            <a class="nav-link" href="/mycart">My Cart</a>
+            <a class="nav-link" href="/myorders">My Orders</a>
+            <a class="nav-link" href="/myproducts">My Products</a>
 
-                    <a class="nav-link" href="/logout">Logout</a>
-                    <% } %>
+            <a class="nav-link" href="/logout">Logout</a>
+            <% } %>
         </div>
 
     </div>

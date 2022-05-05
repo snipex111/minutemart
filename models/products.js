@@ -34,6 +34,9 @@ const ProductSchema = new Schema({
             ref: 'Review'
         }
     ],
+    available: {
+        type: Number
+    },
     orders: [
         {
             orderid: {

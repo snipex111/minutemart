@@ -266,6 +266,7 @@ app.post('/products', isLoggedIn, validateproduct, catchAsync(async (req, res) =
     const newproduct = new products(req.body);
     newproduct.author = req.user._id;
     newproduct.avgrating = 0;
+    newproduct.available = 1;
     await newproduct.save();
     res.redirect('/myproducts');
 }))
@@ -377,7 +378,13 @@ app.post('/products/:productid/newreview', isLoggedIn, catchAsync(async (req, re
 
 
 app.delete('/products/:productid', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
-    await products.findByIdAndDelete(req.params.productid);
+    const requiredproduct = await products.findById(req.params.productid);
+    if (!requiredproduct.orders.length) {
+        await products.findByIdAndDelete(req.params.productid);
+    } else {
+        requiredproduct.available = 0;
+        requiredproduct.save();
+    }
     res.redirect('/products');
 }))
 app.get('/products/:productid/update', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
