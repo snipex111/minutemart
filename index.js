@@ -14,6 +14,12 @@ const flash = require('connect-flash');
 // const userroutes = require('./routes/users');
 // const productroutes = require('./routes/products');
 
+
+const apperror = require('./apperror');
+const catchAsync = require('./catchAsync');
+const Joi = require('joi');
+const { ProductSchema } = require('./schemas');
+
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'));
 
@@ -43,6 +49,10 @@ const sessionOptions = {
 }
 app.use(flash());
 
+
+
+
+
 app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -55,7 +65,22 @@ app.use((req, res, next) => {
     next();
 })
 
-app.post('/register', async (req, res) => {
+
+const validateproduct = (req, res, next) => {
+
+    const { error } = ProductSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new apperror(msg, 400)
+    }
+    else {
+        next();
+    }
+}
+
+
+
+app.post('/register', catchAsync(async (req, res) => {
     try {
         const { email, username, password } = req.body;
         const user = new User({ email, username });
@@ -65,10 +90,10 @@ app.post('/register', async (req, res) => {
     }
     catch (err) {
         req.flash('error', err.message);
-        res.redirect('/register');
+        res.redirect('/users/register');
     }
-})
-app.post('/neworder', isLoggedIn, async (req, res) => {
+}))
+app.post('/neworder', isLoggedIn, catchAsync(async (req, res) => {
 
     let neworder1 = await new orders(req.body);
     neworder1.username = req.user._id;
@@ -93,37 +118,37 @@ app.post('/neworder', isLoggedIn, async (req, res) => {
     curuser.orders.push(neworder1);
     await curuser.save();
     res.redirect('/myorders');
-})
-app.get('/myorders', isLoggedIn, async (req, res) => {
+}))
+app.get('/myorders', isLoggedIn, catchAsync(async (req, res) => {
 
     const curuser = await User.findById(req.user._id).populate('orders');
 
 
     res.render('orders/index', { curuser });
 
-});
+}));
 
-app.get('/myproducts', isLoggedIn, async (req, res) => {
+app.get('/myproducts', isLoggedIn, catchAsync(async (req, res) => {
     const productlist = await products.find({ author: req.user._id });
     app.locals.sortOptions = 'none';
     app.locals.pricemin = 0;
     app.locals.pricemax = 1000000000000000;
     app.locals.val = 0;
     res.render('products/index', { productlist })
-})
+}))
 
-app.get('/orders/:orderid', isLoggedIn, async (req, res) => {
+app.get('/orders/:orderid', isLoggedIn, catchAsync(async (req, res) => {
     const curorder = await orders.findById(req.params.orderid).populate('ordereditems.item');
     res.render('orders/desc', { curorder });
 
-})
+}))
 app.get('/', (req, res) => {
     res.render('home');
 })
-app.get('/users', async (req, res) => {
+app.get('/users', catchAsync(async (req, res) => {
     const userlist = await User.find();
     res.render('users/show', { userlist });
-})
+}))
 
 app.get('/users/register', (req, res) => {
     res.render('users/create')
@@ -133,20 +158,20 @@ app.get('/users/login', (req, res) => {
     res.render('users/login')
 })
 
-app.get('/mycart', isLoggedIn, async (req, res) => {
+app.get('/mycart', isLoggedIn, catchAsync(async (req, res) => {
     const curuser = await User.findById(req.user._id).populate('cart.item');
     //console.log(curuser.cart[0]._id);
 
     res.render('orders/cart', { curuser })
-})
+}))
 
 
-app.delete('/mycart/delete/:itemid', async (req, res) => {
+app.delete('/mycart/delete/:itemid', catchAsync(async (req, res) => {
     await User.findByIdAndUpdate(req.user._id, { $pull: { cart: { _id: req.params.itemid } } }, { new: true });
 
     res.redirect('/mycart');
-})
-app.put('/mycart/inc/:itemid', async (req, res) => {
+}))
+app.put('/mycart/inc/:itemid', catchAsync(async (req, res) => {
     let curuser = await User.findById(req.user._id);
     const { itemid } = req.params;
     function findItem(it) {
@@ -157,8 +182,8 @@ app.put('/mycart/inc/:itemid', async (req, res) => {
 
     await curuser.save();
     res.redirect('/mycart');
-})
-app.put('/mycart/dec/:itemid', async (req, res) => {
+}))
+app.put('/mycart/dec/:itemid', catchAsync(async (req, res) => {
     let curuser = await User.findById(req.user._id);
     const { itemid } = req.params;
     function findItem(it) {
@@ -175,7 +200,7 @@ app.put('/mycart/dec/:itemid', async (req, res) => {
 
 
     res.redirect('/mycart');
-})
+}))
 
 app.get('/users/desc', (req, res) => {
     res.render('orders/desc')
@@ -184,7 +209,7 @@ app.get('/users/index', (req, res) => {
     res.render('orders/index')
 })
 
-app.post('/orders/addtocart/:productid', isLoggedIn, async (req, res) => {
+app.post('/orders/addtocart/:productid', isLoggedIn, catchAsync(async (req, res) => {
     const curuser = await User.findById(req.user._id);
     let addproduct = {};
     addproduct.item = req.params.productid;
@@ -194,40 +219,40 @@ app.post('/orders/addtocart/:productid', isLoggedIn, async (req, res) => {
     curuser.cart.push(addproduct);
     await curuser.save();
     res.redirect(`/products/${req.params.productid}`);
-})
+}))
 
-app.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/users/login' }), async (req, res) => {
+app.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/users/login' }), catchAsync(async (req, res) => {
     console.log(1);
     req.flash('success', 'welcome back!');
     res.redirect('/products');
-})
+}))
 
-app.get('/logout', async (req, res) => {
+app.get('/logout', catchAsync(async (req, res) => {
     req.logout();
     res.redirect('/users/login');
-})
+}))
 
 app.get('/products/new', isLoggedIn, (req, res) => {
     res.render('products/new')
 })
 
-app.get('/products/', async (req, res) => {
+app.get('/products/', catchAsync(async (req, res) => {
     const productlist = await products.find();
     app.locals.sortOptions = 'none';
     app.locals.pricemin = 0;
     app.locals.pricemax = 1000000000000000;
     app.locals.val = 1;
     res.render('products/index', { productlist })
-})
-app.post('/products', isLoggedIn, async (req, res) => {
+}))
+app.post('/products', isLoggedIn, validateproduct, catchAsync(async (req, res) => {
     const newproduct = new products(req.body);
     newproduct.author = req.user._id;
     newproduct.avgrating = 0;
     await newproduct.save();
     res.redirect('/myproducts');
-})
+}))
 
-app.get('/products/sort', async (req, res) => {
+app.get('/products/sort', catchAsync(async (req, res) => {
     let productlist;
     let aggregate_options = [];
     let filter = {};
@@ -257,9 +282,9 @@ app.get('/products/sort', async (req, res) => {
     }
     productlist = await products.aggregate(aggregate_options);
     res.render('products/index', { productlist });
-})
+}))
 
-app.get('/products/filter', async (req, res) => {
+app.get('/products/filter', catchAsync(async (req, res) => {
     let productlist;
     let aggregate_options = [];
     let filter = {};
@@ -311,11 +336,11 @@ app.get('/products/filter', async (req, res) => {
     }
     productlist = await products.aggregate(aggregate_options);
     res.render('products/index', { productlist });
-})
+}))
 
 
 
-app.post('/products/:productid/newreview', isLoggedIn, async (req, res) => {
+app.post('/products/:productid/newreview', isLoggedIn, catchAsync(async (req, res) => {
     const nreview = await new reviews(req.body.review);
     const kal = req.params.productid;
     const curproduct = await products.findById(kal);
@@ -330,38 +355,56 @@ app.post('/products/:productid/newreview', isLoggedIn, async (req, res) => {
     await curproduct.save();
 
     res.redirect(`/products/${kal}`);
-})
+}))
 
 
-app.delete('/products/:productid', isLoggedIn, isAuthor, async (req, res) => {
+app.delete('/products/:productid', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     await products.findByIdAndDelete(req.params.productid);
     res.redirect('/products');
-})
-app.get('/products/:productid/update', isLoggedIn, isAuthor, async (req, res) => {
+}))
+app.get('/products/:productid/update', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const requiredproduct = await products.findById(req.params.productid);
+    if (!requiredproduct) {
+        req.flash('error', 'cannot find the product');
+        return res.redirect('/products');
+    }
     res.render('products/update', { requiredproduct });
-})
-app.put('/products/:productid', isLoggedIn, isAuthor, async (req, res) => {
+}))
+app.put('/products/:productid', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const kal = req.params.productid;
     await products.findByIdAndUpdate(req.params.productid, req.body, { runValidators: true });
     res.redirect(`/products/${kal}`);
-})
-app.get('/products/:productid', async (req, res) => {
+}))
+app.get('/products/:productid', catchAsync(async (req, res) => {
     const rproduct = await products.findById(req.params.productid).populate({
         path: 'reviews',
         populate: {
             path: 'author'
         }
     }).populate('author');
+    if (!rproduct) {
+        req.flash('error', 'cannot find the product');
+        return res.redirect('/products');
+    }
     res.render('products/desc', { rproduct });
-})
+}))
 
-app.delete('/products/:productid/reviews/:reviewid', isLoggedIn, isReviewAuthor, async (req, res) => {
+app.delete('/products/:productid/reviews/:reviewid', isLoggedIn, isReviewAuthor, catchAsync(async (req, res) => {
     await products.findByIdAndUpdate(req.params.productid, { $pull: { reviews: req.params.reviewid } });
     await reviews.findByIdAndDelete(req.params.reviewid);
     res.redirect(`/products/${req.params.productid}`)
+}))
+
+app.all('*', (req, res, next) => {
+    next(new apperror('page not found', 404));
 })
 
+app.use((err, req, res, next) => {
+    const { status1 = 500, } = err;
+    if (!err.message)
+        err.message = 'something went wrong';
+    res.status(status1).render('error', { err })
+})
 
 
 app.listen(3000, () => {

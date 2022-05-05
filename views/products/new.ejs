@@ -20,23 +20,34 @@
     <div class="row">
       <div class="col-sm-6 offset-sm-3 col-12 p-5 col-lg-4 offset-xl-4 vh-100" id="innerdiv">
         <h3 class="mt-5 mb-2 text-center">New Product</h3>
-        <form action="/products" method="post">
+        <form action="/products" method="post" novalidate class="validated-form">
           <div class="mb-3">
             <label for="productname" class="form-label">Product Name</label>
             <input type="text" name="name" class="form-control" id="productname" aria-describedby="emailHelp">
-
+            <div class="valid-feedback">
+              Looks good!
+            </div>
           </div>
           <div class="mb-3">
             <label for="price" class="form-label">Price</label>
             <input type="number" name="price" class="form-control" id="price">
+            <div class="valid-feedback">
+              Looks good!
+            </div>
           </div>
           <div class="mb-3">
             <label for="imagesrc" class="form-label">Image</label>
             <input type="text" name="image" class="form-control" id="imagesrc">
+            <div class="valid-feedback">
+              Looks good!
+            </div>
           </div>
           <div class="mb-3">
             <label for="description" class="form-label">Description</label>
             <input type="text" name="description" class="form-control" id="description">
+            <div class="valid-feedback">
+              Looks good!
+            </div>
           </div>
           <div class="text-center mt-2">
             <button type="submit" class="btn btn-outline-light">Submit</button>
@@ -45,6 +56,33 @@
       </div>
     </div>
   </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+    integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+    crossorigin="anonymous"></script>
+  <script>
+    (function () {
+      'use strict'
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      const forms = document.querySelectorAll('.validated-form')
+      // Loop over them and prevent submission
+      Array.from(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
+  </script>
 </body>
+
 
 </html>
