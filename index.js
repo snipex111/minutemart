@@ -131,9 +131,12 @@ app.post('/neworder', isLoggedIn, catchAsync(async (req, res) => {
 }))
 app.get('/myorders', isLoggedIn, catchAsync(async (req, res) => {
 
-    const curuser = await User.findById(req.user._id).populate('orders');
-
-
+    const curuser = await User.findById(req.user._id).populate({
+        path: 'orders',
+        populate: {
+            path: 'ordereditems.item'
+        }
+    });
     res.render('orders/index', { curuser });
 
 }));

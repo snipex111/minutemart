@@ -36,9 +36,11 @@
                     <div class="col-sm-8">
                         <div class="card-body">
                             <h4 class="card-title">Received</h4>
-                            <p class="card-text">Green Capsicum
+                            <p class="card-text"><%= ord.ordereditems[0].item.name %>
                                 <br>
-                                <span class="text-muted">+ 5 more</span>
+                                <% if(ord.ordereditems.length > 1) {%>
+                                <span class="text-muted">+ <%=ord.ordereditems.length - 1%> more</span>
+                                <% } %>
                             </p>
                             <p class="card-text"><b>
                                     <%=ord.paymentamount%>
