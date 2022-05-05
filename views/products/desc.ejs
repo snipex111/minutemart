@@ -57,6 +57,9 @@
                     <form action="/products/<%=rproduct._id%>?_method=DELETE" method="post" class="d-inline">
                         <button class="btn btn-danger">Delete</button>
                     </form>
+                    <form action="/products/<%=rproduct._id%>/vieworders" method="get" class="d-inline">
+                        <button class="btn btn-outline-secondary">View Orders</button>
+                    </form>
                     <%}%>
                     </div>
 

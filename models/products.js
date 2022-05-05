@@ -36,8 +36,11 @@ const ProductSchema = new Schema({
     ],
     orders: [
         {
-            type: Schema.Types.ObjectId,
-            ref: 'Order'
+            orderid: {
+                type: Schema.Types.ObjectId,
+                ref: 'Order'
+            },
+            quantity: Number
         }
     ]
 });

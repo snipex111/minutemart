@@ -101,7 +101,12 @@ app.post('/neworder', isLoggedIn, catchAsync(async (req, res) => {
     let orditems = [];
     for (let x of curuser.cart) {
         orditems.push(x);
-        x.item.orders.push(neworder1);
+        let ord = {
+            orderid: neworder1._id,
+            quantity: x.quantity
+        }
+        x.item.orders.push(ord);
+        console.log(x.item);
         x.item.save();
     }
     neworder1.ordereditems = orditems;
@@ -366,9 +371,18 @@ app.get('/products/:productid/update', isLoggedIn, isAuthor, catchAsync(async (r
     const requiredproduct = await products.findById(req.params.productid);
     if (!requiredproduct) {
         req.flash('error', 'cannot find the product');
-        return res.redirect('/products');
+        return res.redirect('/myproducts');
     }
     res.render('products/update', { requiredproduct });
+}))
+app.get('/products/:productid/vieworders', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
+    const requiredproduct = await products.findById(req.params.productid).populate('orders');
+    console.log(requiredproduct);
+    if (!requiredproduct) {
+        req.flash('error', 'cannot find the product');
+        return res.redirect('/myproducts');
+    }
+    res.render('products/vieworders', { requiredproduct });
 }))
 app.put('/products/:productid', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const kal = req.params.productid;
