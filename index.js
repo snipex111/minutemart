@@ -76,6 +76,8 @@ app.post('/neworder', isLoggedIn, async (req, res) => {
     let orditems = [];
     for (let x of curuser.cart) {
         orditems.push(x);
+        x.item.orders.push(neworder1);
+        x.item.save();
     }
     neworder1.ordereditems = orditems;
     let val = 0;
@@ -83,7 +85,6 @@ app.post('/neworder', isLoggedIn, async (req, res) => {
         val += (x.quantity) * (x.item.price);
     }
     neworder1.paymentamount = val;
-    console.log(neworder1);
 
     while (curuser.cart.length) {
         curuser.cart.pop();
