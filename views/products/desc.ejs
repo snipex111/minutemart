@@ -66,7 +66,7 @@
                             <p class="card-text">
                                 <button type="button" id="minusbtn" class="btn btn-outline-secondary">-</button>
                                 &emsp;
-                                <input type="text" id="quantity" name="quantity" class="form-control" value="0">
+                                <input type="text" id="quantity" name="quantity" class="form-control" value="1">
                                 &emsp;
                                 <button id="plusbtn" class="btn btn-outline-secondary" type="button">+
                                 </button>
@@ -147,7 +147,6 @@
                                 <%=rev.reviewbody%>
                             </p>
                         </div>
-
                         <%if(currentUser && rev.author.equals(currentUser._id)){%>
                         <div class="card-body">
                             <form action="/products/<%=rproduct._id%>/reviews/<%= rev._id %>?_method=DELETE"
@@ -155,24 +154,24 @@
                                 <button class="btn btn-danger">Delete</button>
                             </form>
                         </div>
+                        <%}%>
                     </div>
-                    <%}%>
-                        
-                </div>
                     <% } %>
-                    <% }else{ %>
-                    <div class="card mt-3">
-                        <div class="card-body">
-                            <p class="card-text">
-                                No reviews yet
-                                <br>
-                                <% if(!currentUser) {%>
-                                <a href="/users/login">Log in</a> to leave a review!
-                                <% } %>
-                            </p>
+                        <% }else{ %>
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    No reviews yet
+                                    <br>
+                                    <% if(!currentUser) {%>
+                                    <a href="/users/login">Log in</a> to leave a review!
+                                    <% } %>
+                                </p>
+                            </div>
                         </div>
+                        <% } %>
+
                     </div>
-                    <% } %>
                 </div>
             </div>
         </div>

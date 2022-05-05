@@ -239,9 +239,17 @@ app.get('/products/sort', async (req, res) => {
         app.locals.sortOptions = 'priceasc';
         aggregate_options.push({ $sort: { 'price': 1 } });
     }
-    else if (req.query.sortOptions = 'pricedesc') {
+    else if (req.query.sortOptions == 'pricedesc') {
         app.locals.sortOptions = 'pricedesc';
         aggregate_options.push({ $sort: { 'price': -1 } });
+    }
+    else if (req.query.sortOptions == 'ratingasc') {
+        app.locals.sortOptions = 'ratingasc';
+        aggregate_options.push({ $sort: { 'avgrating': 1 } });
+    }
+    else if (req.query.sortOptions == 'ratingdesc') {
+        app.locals.sortOptions = 'ratingdesc';
+        aggregate_options.push({ $sort: { 'avgrating': -1 } });
     }
     else {
         app.locals.sortOptions = 'default';
@@ -295,6 +303,10 @@ app.get('/products/filter', async (req, res) => {
         aggregate_options.push({ $sort: { 'price': -1 } });
     } else if (app.locals.sortOptions == 'priceasc') {
         aggregate_options.push({ $sort: { 'price': 1 } });
+    } else if (app.locals.sortOptions == 'ratingasc') {
+        aggregate_options.push({ $sort: { 'avgrating': 1 } });
+    } else if (app.locals.sortOptions == 'ratingdesc') {
+        aggregate_options.push({ $sort: { 'avgrating': -1 } });
     }
     productlist = await products.aggregate(aggregate_options);
     res.render('products/index', { productlist });

@@ -17,109 +17,133 @@
 
 <body>
     <%- include('../partials/navbar') %>
-        <div class="container-fluid mt-5">
-            <div class="row">
-                <div class="mb-3 col-sm-8 col-xl-6 offset-sm-2 offset-xl-3">
-                    <h1>My Cart</h1>
-                </div>
-                <form action="/neworder" method="post">
-                    <button>Buy Now</button>
-                </form>
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="mb-3 col-sm-8 col-xl-6 offset-sm-2 offset-xl-3">
+                <h1>My Cart</h1>
             </div>
-            <div class="row">
-                <%for(let it of curuser.cart){%>
-                    <div class="card vert d-none d-sm-block mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3">
-                        <div class="row g-0">
-                            <div class="col-sm-4">
-                                <img src="<%=it.item.image%>" class="img-fluid rounded start mt-2 mb-2"
-                                    alt="Picture of product in your order">
-                            </div>
-                            <div class="col-sm-8 col-12 p-0">
-                                <div class="card-body">
-                                    <h4 class="card-title"><b>
-                                            <%=it.item.name%>
-                                        </b></h4>
-                                    <p class="card-text">ABC Retailer</p>
-                                    <p class="card-text">
-                                    <form action="/mycart/dec/<%=it._id%>?_method=PUT" method="post" class="d-inline">
-                                        <button class="btn btn-outline-secondary">-</button>
-                                    </form>
-                                    &emsp;<span>
+            <% if(curuser.cart.length){ %>
+            <form action="/neworder" method="post">
+                <button>Buy Now</button>
+            </form>
+            <% } %>
+        </div>
+        <div class="row">
+            <% if(curuser.cart.length){ %>
+            <%for(let it of curuser.cart){%>
+            <div class="card vert d-none d-sm-block mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3">
+                <div class="row g-0">
+                    <div class="col-sm-4">
+                        <img src="<%=it.item.image%>" class="img-fluid rounded start mt-2 mb-2"
+                            alt="Picture of product in your order">
+                    </div>
+                    <div class="col-sm-8 col-12 p-0">
+                        <div class="card-body">
+                            <h4 class="card-title"><b>
+                                    <%=it.item.name%>
+                                </b></h4>
+                            <p class="card-text">ABC Retailer</p>
+                            <p class="card-text">
+                                <form action="/mycart/dec/<%=it._id%>?_method=PUT" method="post" class="d-inline">
+                                    <button class="btn btn-outline-secondary">-</button>
+                                </form>
+                                &emsp;<span>
+                                    <%=it.quantity%>
+                                </span>&emsp;
+                                <form action="/mycart/inc/<%=it._id%>?_method=PUT" method="post" class="d-inline">
+                                    <button class="btn btn-outline-secondary">+</button>
+                                </form>
+                            </p>
+                            <p class="card-text mb-0">
+                                <b id="totalprice">
+                                    <%=it.quantity * it.item.price %>
+                                </b>
+                                &emsp;&emsp;(<small>Rs. <span>
+                                        <%=it.item.price%>
+                                    </span> X
+                                    <span>
                                         <%=it.quantity%>
-                                    </span>&emsp;
-                                    <form action="/mycart/inc/<%=it._id%>?_method=PUT" method="post" class="d-inline">
-                                        <button class="btn btn-outline-secondary">+</button>
-                                    </form>
-                                    </p>
-                                    <p class="card-text mb-0">
-                                        <b id="totalprice">
-                                            <%=it.quantity * it.item.price %>
-                                        </b>
-                                        &emsp;&emsp;(<small>Rs. <span>
-                                                <%=it.item.price%>
-                                            </span> X
-                                            <span>
-                                                <%=it.quantity%>
-                                            </span></small>)
-                                    </p>
-                                    <div>
-                                        <form action="/products/<%=it.item._id%>" method="get" class="d-inline">
-                                            <button class="btn btn-link gotobutton">Go To Product</button>
-                                        </form>
-                                        <form action="/mycart/delete/<%=it._id%>?_method=DELETE" method="post"
-                                            class="d-inline">
-                                            <button class="btn btn-link deletebutton">Delete</button>
-                                        </form>
-                                    </div>
-
-                                </div>
+                                    </span></small>)
+                            </p>
+                            <div>
+                                <form action="/products/<%=it.item._id%>" method="get" class="d-inline">
+                                    <button class="btn btn-link gotobutton">Go To Product</button>
+                                </form>
+                                <form action="/mycart/delete/<%=it._id%>?_method=DELETE" method="post" class="d-inline">
+                                    <button class="btn btn-link deletebutton">Delete</button>
+                                </form>
                             </div>
+
                         </div>
                     </div>
-                    <%}%>
-                        <%for(let it of curuser.cart){%>
-                            <div class="card hor d-sm-none mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3 p-2">
-                                <img src="<%=it.item.image%>" class="rounded" alt="Photo of product in your order">
-                                <div class="card-body">
-                                    <h4 class="card-title"><b>
-                                            <%=it.item.name%>
-                                        </b></h4>
-                                    <p class="card-text">ABC Retailer</p>
-                                    <p class="card-text">
-                                    <form action="/mycart/dec/<%=it._id%>?_method=PUT" method="post" class="d-inline">
-                                        <button class="btn btn-outline-secondary">-</button>
-                                    </form>
-                                    &emsp;<span>
-                                        <%=it.quantity%>
-                                    </span>&emsp;
-                                    <form action="/mycart/inc/<%=it._id%>?_method=PUT" method="post" class="d-inline">
-                                        <button class="btn btn-outline-secondary">+</button>
-                                    </form>
-                                    </p>
-                                    <p class="card-text mb-0">
-                                        <b id="totalprice">
-                                            <%=it.quantity * it.item.price %>
-                                        </b>
-                                        &emsp;&emsp;(<small>Rs. <span>
-                                                <%=it.item.price%>
-                                            </span> X
-                                            <span>
-                                                <%=it.quantity%>
-                                            </span></small>)
-                                    </p>
-                                    <div>
-                                        <form action="/products/<%=it.item._id%>" method="get" class="d-inline">
-                                            <button class="btn btn-link gotobutton">Go To Product</button>
-                                        </form>
-                                        <form action="/mycart/delete/<%=it._id%>?_method=DELETE" method="post"
-                                            class="d-inline">
-                                            <button class="btn btn-link deletebutton">Delete</button>
-                                        </form>
-                                    </div>
+                </div>
+            </div>
+            <%}%>
+                    <% }else{ %>
+            <div class="card vert d-none d-sm-block mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3">
+                <div class="card-body">
+                    <p class="card-text">
+                        Your cart is empty.
+                        <br>
+                        <a href="/products">Explore</a> our wide collection of products now!
+                    </p>
+                </div>
+            </div>
+            <% } %>
+            <% if(curuser.cart.length){ %>
+            <%for(let it of curuser.cart){%>
+            <div class="card hor d-sm-none mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3 p-2">
+                <img src="<%=it.item.image%>" class="rounded" alt="Photo of product in your order">
+                <div class="card-body">
+                    <h4 class="card-title"><b>
+                            <%=it.item.name%>
+                        </b></h4>
+                    <p class="card-text">ABC Retailer</p>
+                    <p class="card-text">
+                        <form action="/mycart/dec/<%=it._id%>?_method=PUT" method="post" class="d-inline">
+                            <button class="btn btn-outline-secondary">-</button>
+                        </form>
+                        &emsp;<span>
+                            <%=it.quantity%>
+                        </span>&emsp;
+                        <form action="/mycart/inc/<%=it._id%>?_method=PUT" method="post" class="d-inline">
+                            <button class="btn btn-outline-secondary">+</button>
+                        </form>
+                    </p>
+                    <p class="card-text mb-0">
+                        <b id="totalprice">
+                            <%=it.quantity * it.item.price %>
+                        </b>
+                        &emsp;&emsp;(<small>Rs. <span>
+                                <%=it.item.price%>
+                            </span> X
+                            <span>
+                                <%=it.quantity%>
+                            </span></small>)
+                    </p>
+                    <div>
+                        <form action="/products/<%=it.item._id%>" method="get" class="d-inline">
+                            <button class="btn btn-link gotobutton">Go To Product</button>
+                        </form>
+                        <form action="/mycart/delete/<%=it._id%>?_method=DELETE" method="post" class="d-inline">
+                            <button class="btn btn-link deletebutton">Delete</button>
+                        </form>
+                    </div>
 
-                                </div>
-                            </div>
-                            <%}%>
+                </div>
+            </div>
+            <%}%>
+            <% }else{ %>
+            <div class="card hor d-sm-none mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3 p-2">
+                <div class="card-body">
+                    <p class="card-text">
+                        Your cart is empty.
+                        <br>
+                        <a href="/products">Explore</a> our wide collection of products now!
+                    </p>
+                </div>
+            </div>
+            <%}%>
             </div>
         </div>
 </body>
