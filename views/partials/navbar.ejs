@@ -1,4 +1,39 @@
-<nav class="navbar navbar-dark navbar-expand-lg main-navbar sticky-top" id="mainNavbar">
+<nav class="navbar navbar-dark navbar-expand-lg main-navbar sticky-top" id="mainNavbar ">
+    <a class="navbar-brand" href="/">MinuteMart</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+
+                <a class="nav-link" href="/products/">All <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/products/new">New</a>
+            </li>
+
+        </ul>
+        <div class="navbar-nav ml-auto">
+            <% if(!currentUser) {%>
+                <a class="nav-link" href="/users/login">Login</a>
+                <a class="nav-link" href="/users/register">Register</a>
+                <% } else {%>
+                    <a class="nav-link" href="/mycart">My Cart</a>
+                    <a class="nav-link" href="/myorders">My Orders</a>
+                    <a class="nav-link" href="/myproducts">My Products</a>
+
+                    <a class="nav-link" href="/logout">Logout</a>
+                    <% } %>
+        </div>
+
+    </div>
+</nav>
+
+<!-- <nav class="navbar navbar-dark navbar-expand-lg main-navbar sticky-top" id="mainNavbar">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">MinuteMart</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
@@ -29,4 +64,4 @@
             <% } %>
         </div>
     </div>
-</nav>
+</nav> -->
