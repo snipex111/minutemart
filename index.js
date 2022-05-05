@@ -62,6 +62,8 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
 
     res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     next();
 })
 
@@ -85,8 +87,11 @@ app.post('/register', catchAsync(async (req, res) => {
         const { email, username, password } = req.body;
         const user = new User({ email, username });
         const registereduser = await User.register(user, password);
-        console.log(registereduser);
-        res.redirect('/products');
+        req.login(registereduser, err => {
+            if (err) return next(err);
+            req.flash('success', 'Welcome to MinuteMart!');
+            res.redirect('/products');
+        })
     }
     catch (err) {
         req.flash('error', err.message);
@@ -150,10 +155,7 @@ app.get('/orders/:orderid', isLoggedIn, catchAsync(async (req, res) => {
 app.get('/', (req, res) => {
     res.render('home');
 })
-app.get('/users', catchAsync(async (req, res) => {
-    const userlist = await User.find();
-    res.render('users/show', { userlist });
-}))
+
 
 app.get('/users/register', (req, res) => {
     res.render('users/create')
@@ -227,9 +229,17 @@ app.post('/orders/addtocart/:productid', isLoggedIn, catchAsync(async (req, res)
 }))
 
 app.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/users/login' }), catchAsync(async (req, res) => {
-    console.log(1);
-    req.flash('success', 'welcome back!');
-    res.redirect('/products');
+    try {
+        req.flash('success', 'welcome back!');
+
+        const redirectUrl = req.session.returnTo || '/products';
+        delete req.session.returnTo;
+        res.redirect(redirectUrl);
+    }
+    catch (err) {
+        req.flash('error', 'Invalid Credentials');
+
+    }
 }))
 
 app.get('/logout', catchAsync(async (req, res) => {
