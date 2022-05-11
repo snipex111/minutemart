@@ -11,6 +11,7 @@ const orders = require('./models/orders');
 const passport = require('passport');
 const localstrategy = require('passport-local');
 const flash = require('connect-flash');
+const categories = require('./categories');
 // const userroutes = require('./routes/users');
 // const productroutes = require('./routes/products');
 
@@ -251,7 +252,8 @@ app.get('/logout', catchAsync(async (req, res) => {
 }))
 
 app.get('/products/new', isLoggedIn, (req, res) => {
-    res.render('products/new')
+    console.log(categories);
+    res.render('products/new', categories);
 })
 
 app.get('/products/', catchAsync(async (req, res) => {

@@ -30,7 +30,7 @@
             <div class="card vert d-none d-sm-block mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3">
                 <div class="row g-0">
                     <div class="col-sm-4">
-                        <img src="/public/photos/register_centre.jpg" class="img-fluid rounded start mt-2 mb-2"
+                        <img src="<%= ord.ordereditems[0].item.image %>" class="img-fluid rounded start mt-2 mb-2"
                             alt="Picture of product in your order">
                     </div>
                     <div class="col-sm-8">
@@ -51,14 +51,20 @@
                 </div>
             </div>
             <div class="card hor d-sm-none mb-3 col-sm-8 offset-sm-2 col-xl-6 offset-xl-3 p-2">
-                <img src="/public/photos/register_left.jpg" class="rounded" alt="Photo of product in your order">
+                <img src="<%= ord.ordereditems[0].item.image %>" class="img-fluid rounded start mt-2 mb-2"
+                    alt="Picture of product in your order">
                 <div class="card-body">
                     <h4 class="card-title">Received</h4>
-                    <p class="card-text">Green Capsicum
+                    <p class="card-text"><%= ord.ordereditems[0].item.name %>
                         <br>
-                        <span class="text-muted">+ 5 more</span>
+                        <% if(ord.ordereditems.length > 1) {%>
+                        <span class="text-muted">+ <%=ord.ordereditems.length - 1%> more</span>
+                        <% } %>
                     </p>
-                    <p class="card-text"><small class="text-muted">Ordered on: 01/05/2022</small></p>
+                    <p class="card-text"><b>
+                            <%=ord.paymentamount%>
+                        </b></p>
+                    <a href="/orders/<%=ord._id%>" class="btn stretched-link"></a>
                 </div>
             </div>
         </div>
@@ -86,6 +92,12 @@
         </div>
         <% } %>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous">
+    </script>
 </body>
 
 </html>

@@ -18,8 +18,18 @@
     background-size: cover;
 }
 
-h2 {
+h2,
+p,
+small {
     color: whitesmoke;
+}
+
+a,
+a:hover,
+a:visited,
+a:active {
+    color: whitesmoke;
+    text-decoration: underline;
 }
 
 body {

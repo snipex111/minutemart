@@ -5,3 +5,7 @@
 .main-navbar a {
     color: white;
 }
+
+body {
+    font-family: 'Lora', serif;
+}

@@ -23,6 +23,10 @@ const ProductSchema = new Schema({
     avgrating: {
         type: Number
     },
+    category: {
+        type: String,
+        required: true
+    },
     author:
     {
         type: Schema.Types.ObjectId,
