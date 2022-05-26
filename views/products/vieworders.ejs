@@ -18,7 +18,86 @@
     <%- include('../partials/navbar') %>
     <div class="container-fluid">
         <h2 class="mt-4 mb-4">Orders for: <%= requiredproduct.name %></h2>
-        <h5 class="mb-4">Total orders: <%= requiredproduct.orders.length %></h5>
+        <h5 class="mb-4">Quantity available: <%= requiredproduct.quantity %></h5>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addStockModal">
+            Add Stock
+        </button>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeStockModal">
+            Remove Stock
+        </button>
+        <div class="modal fade" id="addStockModal" tabindex="-1" aria-labelledby="AddStock" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="AddStock">Add Stock</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/products/<%= requiredproduct._id %>/addstock" method="post">
+                            <div class="row g-3">
+                                <div class="col-auto">
+                                    <label for="quantity" class="col-form-label">Number of units to be added: </label>
+                                </div>
+                            </div>
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <input type="number" id="quantity" name="quantity" class="form-control"
+                                        aria-describedby="quantity">
+                                </div>
+                                <div class="col-auto">
+                                    <span class="form-text">
+                                        units
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="modal-footer mt-3">
+                                <button class="btn btn-secondary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="removeStockModal" tabindex="-1" aria-labelledby="RemoveStock" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="RemoveStock">Remove Stock</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/products/<%= requiredproduct._id %>/removestock" method="post">
+                            <div class="row g-3">
+                                <div class="col-auto">
+                                    <label for="quantity" class="col-form-label">Number of units to be removed: </label>
+                                </div>
+                            </div>
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <input type="number" id="quantity" name="quantity" class="form-control"
+                                        aria-describedby="quantity">
+                                </div>
+                                <div class="col-auto">
+                                    <span class="form-text">
+                                        units
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="modal-footer mt-3">
+                                <button class="btn btn-danger">Remove</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mb-4 mt-3">Total orders: <%= requiredproduct.orders.length %></h5>
         <table class="table table-hover table-striped">
             <thead>
                 <tr>

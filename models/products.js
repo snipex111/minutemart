@@ -41,6 +41,10 @@ const ProductSchema = new Schema({
     available: {
         type: Number
     },
+    quantity: {
+        type: Number,
+        default: 0
+    },
     orders: [
         {
             orderid: {

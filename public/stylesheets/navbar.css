@@ -9,3 +9,7 @@
 body {
     font-family: 'Lora', serif;
 }
+
+.dropdown-menu {
+    background-color: #76323f;
+}

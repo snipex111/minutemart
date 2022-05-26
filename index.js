@@ -111,6 +111,7 @@ app.post('/neworder', isLoggedIn, catchAsync(async (req, res) => {
             orderid: neworder1._id,
             quantity: x.quantity
         }
+        x.item.quantity = x.item.quantity - parseInt(x.quantity);
         x.item.orders.push(ord);
         console.log(x.item);
         x.item.save();
@@ -148,6 +149,7 @@ app.get('/myproducts', isLoggedIn, catchAsync(async (req, res) => {
     app.locals.pricemin = 0;
     app.locals.pricemax = 1000000000000000;
     app.locals.val = 0;
+    app.locals.searchdata = 'none';
     res.render('products/index', { productlist })
 }))
 
@@ -157,7 +159,7 @@ app.get('/orders/:orderid', isLoggedIn, catchAsync(async (req, res) => {
 
 }))
 app.get('/', (req, res) => {
-    res.render('home');
+    res.render('home', categories);
 })
 
 
@@ -177,12 +179,12 @@ app.get('/mycart', isLoggedIn, catchAsync(async (req, res) => {
 }))
 
 
-app.delete('/mycart/delete/:itemid', catchAsync(async (req, res) => {
+app.delete('/mycart/delete/:itemid', isLoggedIn, catchAsync(async (req, res) => {
     await User.findByIdAndUpdate(req.user._id, { $pull: { cart: { _id: req.params.itemid } } }, { new: true });
 
     res.redirect('/mycart');
 }))
-app.put('/mycart/inc/:itemid', catchAsync(async (req, res) => {
+app.put('/mycart/inc/:itemid', isLoggedIn, catchAsync(async (req, res) => {
     let curuser = await User.findById(req.user._id);
     const { itemid } = req.params;
     function findItem(it) {
@@ -194,7 +196,7 @@ app.put('/mycart/inc/:itemid', catchAsync(async (req, res) => {
     await curuser.save();
     res.redirect('/mycart');
 }))
-app.put('/mycart/dec/:itemid', catchAsync(async (req, res) => {
+app.put('/mycart/dec/:itemid', isLoggedIn, catchAsync(async (req, res) => {
     let curuser = await User.findById(req.user._id);
     const { itemid } = req.params;
     function findItem(it) {
@@ -224,9 +226,7 @@ app.post('/orders/addtocart/:productid', isLoggedIn, catchAsync(async (req, res)
     const curuser = await User.findById(req.user._id);
     let addproduct = {};
     addproduct.item = req.params.productid;
-
     addproduct.quantity = req.body.quantity;
-
     curuser.cart.push(addproduct);
     await curuser.save();
     res.redirect(`/products/${req.params.productid}`);
@@ -234,7 +234,7 @@ app.post('/orders/addtocart/:productid', isLoggedIn, catchAsync(async (req, res)
 
 app.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/users/login' }), catchAsync(async (req, res) => {
     try {
-        req.flash('success', 'welcome back!');
+        req.flash('success', `Welcome Back, ${req.user.username}!`);
 
         const redirectUrl = req.session.returnTo || '/products';
         delete req.session.returnTo;
@@ -262,6 +262,7 @@ app.get('/products/', catchAsync(async (req, res) => {
     app.locals.pricemin = 0;
     app.locals.pricemax = 1000000000000000;
     app.locals.val = 1;
+    app.locals.searchdata = 'none';
     res.render('products/index', { productlist })
 }))
 app.post('/products', isLoggedIn, validateproduct, catchAsync(async (req, res) => {
@@ -280,6 +281,10 @@ app.get('/products/sort', catchAsync(async (req, res) => {
     filter.price = { $gte: app.locals.pricemin, $lt: app.locals.pricemax };
     if (!app.locals.val) {
         filter.author = req.user._id;
+    }
+    if (app.locals.searchdata != 'none') {
+        var regex = new RegExp(app.locals.searchdata, "i");
+        filter.name = regex;
     }
     aggregate_options.push({ $match: filter });
     if (req.query.sortOptions == 'priceasc') {
@@ -311,6 +316,10 @@ app.get('/products/filter', catchAsync(async (req, res) => {
     let filter = {};
     if (!app.locals.val) {
         filter.author = req.user._id;
+    }
+    if (app.locals.searchdata != 'none') {
+        var regex = new RegExp(app.locals.searchdata, "i");
+        filter.name = regex;
     }
     if (req.query.filterOptions) {
         switch (req.query.filterOptions) {
@@ -392,16 +401,15 @@ app.delete('/products/:productid', isLoggedIn, isAuthor, catchAsync(async (req, 
 app.get('/products/:productid/update', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const requiredproduct = await products.findById(req.params.productid);
     if (!requiredproduct) {
-        req.flash('error', 'cannot find the product');
+        req.flash('error', 'Cannot find the product');
         return res.redirect('/myproducts');
     }
     res.render('products/update', { requiredproduct });
 }))
 app.get('/products/:productid/vieworders', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const requiredproduct = await products.findById(req.params.productid).populate('orders');
-    console.log(requiredproduct);
     if (!requiredproduct) {
-        req.flash('error', 'cannot find the product');
+        req.flash('error', 'Cannot find the product');
         return res.redirect('/myproducts');
     }
     res.render('products/vieworders', { requiredproduct });
@@ -411,6 +419,45 @@ app.put('/products/:productid', isLoggedIn, isAuthor, catchAsync(async (req, res
     await products.findByIdAndUpdate(req.params.productid, req.body, { runValidators: true });
     res.redirect(`/products/${kal}`);
 }))
+
+app.post('/products/:productid/addstock', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
+    const curproduct = await products.findById(req.params.productid);
+    if (!curproduct) {
+        req.flash('error', 'Cannot find the product');
+        return res.redirect('/myproducts');
+    }
+    curproduct.quantity += parseInt(req.body.quantity);
+    curproduct.save();
+    res.redirect(`/products/${req.params.productid}/vieworders`);
+}))
+
+app.post('/products/:productid/removestock', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
+    const curproduct = await products.findById(req.params.productid);
+    if (!curproduct) {
+        req.flash('error', 'Cannot find the product');
+        return res.redirect('/myproducts');
+    }
+    curproduct.quantity -= parseInt(req.body.quantity);
+    curproduct.save();
+    res.redirect(`/products/${req.params.productid}/vieworders`);
+}))
+
+app.get('/products/search', catchAsync(async (req, res) => {
+    var regex = new RegExp(req.query.data, "i")
+        , query = { name: regex };
+    app.locals.sortOptions = 'none';
+    app.locals.pricemin = 0;
+    app.locals.pricemax = 1000000000000000;
+    app.locals.searchdata = req.query.data;
+    products.find(query, function (err, productlist) {
+        if (err) {
+            req.send(err);
+        }
+
+        res.render('products/index', { productlist });
+    });
+}))
+
 app.get('/products/:productid', catchAsync(async (req, res) => {
     const rproduct = await products.findById(req.params.productid).populate({
         path: 'reviews',
@@ -419,7 +466,7 @@ app.get('/products/:productid', catchAsync(async (req, res) => {
         }
     }).populate('author');
     if (!rproduct) {
-        req.flash('error', 'cannot find the product');
+        req.flash('error', 'Cannot find the product');
         return res.redirect('/products');
     }
     res.render('products/desc', { rproduct });
@@ -432,13 +479,13 @@ app.delete('/products/:productid/reviews/:reviewid', isLoggedIn, isReviewAuthor,
 }))
 
 app.all('*', (req, res, next) => {
-    next(new apperror('page not found', 404));
+    next(new apperror('Page not found', 404));
 })
 
 app.use((err, req, res, next) => {
     const { status1 = 500, } = err;
     if (!err.message)
-        err.message = 'something went wrong';
+        err.message = 'Something went wrong';
     res.status(status1).render('error', { err })
 })
 
