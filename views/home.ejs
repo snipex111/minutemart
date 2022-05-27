@@ -29,21 +29,21 @@
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <img src="../public/photos/homepage_1.jpg" class="d-block w-100" alt="...">
-                            <div class="carousel-caption d-none d-md-block">
+                            <div class="carousel-caption bkg">
                                 <h3>There's nothing like fresh produce!</h3>
                                 <h5>Take your pick from MinuteMart's fresh fruits and vegetables!</h5>
                             </div>
                         </div>
                         <div class="carousel-item">
                             <img src="../public/photos/homepage_2.jpg" class="d-block w-100" alt="...">
-                            <div class="carousel-caption d-none d-md-block">
+                            <div class="carousel-caption bkg">
                                 <h3>It's easy to take care of your skin!</h3>
                                 <h5>Buy the most affordable and skin-friendly bath and beauty products!</h5>
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="../public/photos/homepage-3.jpg" class="d-block w-100" alt="...">
-                            <div class="carousel-caption d-none d-md-block">
+                            <img src="../public/photos/homepage_3.jpg" class="d-block w-100" alt="...">
+                            <div class="carousel-caption bkg">
                                 <h3>We can all be productive!</h3>
                                 <h5>Choose from MinuteMart's wide range of stationery!</h5>
                             </div>
@@ -69,18 +69,21 @@
         </div>
         <div class="row mt-3">
             <% for(let cat of categories){ %>
-            <div class="col-md-3 col-sm-6 col-12 mb-3">
-                <div class="card text-white">
-                    <img src="../public/photos/categories.jpg" alt="" class="card-img img-fluid">
-                    <div class="card-img-overlay">
-                        <h3 class="card-title">
-                            <%=cat %>
-                        </h3>
+            <div class="col-md-3 col-sm-6 col-12 mb-4">
+                <a href="/products/categories/<%=cat.name %>">
+                    <div class="card text-white">
+                        <img src="../public/photos/<%=cat.img  %>" alt="" class="card-img img-fluid">
+                        <div class="card-img-overlay bkg2">
+                            <h3 class="card-title">
+                                <%=cat.name %>
+                            </h3>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <% } %>
         </div>
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">

@@ -38,7 +38,7 @@
             <select class="form-select-lg" aria-label="Default select example" name="category" id="category"
               style="min-width:100%;">
               <% for(let cat of categories) {%>
-              <option value="<%= cat %> "><%= cat %> </option>
+              <option value="<%= cat.name %>"><%= cat.name %> </option>
               <% } %>
             </select>
           </div>

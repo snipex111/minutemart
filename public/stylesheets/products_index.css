@@ -16,3 +16,7 @@ body {
 .star {
     color: #FFDF00;
 }
+
+.card:hover {
+    transform: scale(1.05, 1.05);
+}

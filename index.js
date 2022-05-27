@@ -90,7 +90,7 @@ app.post('/register', catchAsync(async (req, res) => {
         const registereduser = await User.register(user, password);
         req.login(registereduser, err => {
             if (err) return next(err);
-            req.flash('success', 'Welcome to MinuteMart!');
+            req.flash('success', `Welcome to MinuteMart, ${registereduser.username}!`);
             res.redirect('/products');
         })
     }
@@ -272,6 +272,18 @@ app.post('/products', isLoggedIn, validateproduct, catchAsync(async (req, res) =
     newproduct.available = 1;
     await newproduct.save();
     res.redirect('/myproducts');
+}))
+
+app.get('/products/categories/:category', catchAsync(async (req, res) => {
+    const cat = req.params.category;
+    const productlist = await products.find({ 'category': cat });
+    console.log(cat);
+    app.locals.sortOptions = 'none';
+    app.locals.pricemin = 0;
+    app.locals.pricemax = 1000000000000000;
+    app.locals.val = 1;
+    app.locals.searchdata = 'none';
+    res.render('products/index', { productlist });
 }))
 
 app.get('/products/sort', catchAsync(async (req, res) => {
