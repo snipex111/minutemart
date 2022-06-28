@@ -1,11 +1,8 @@
 <nav class="navbar navbar-dark navbar-expand-sm main-navbar sticky-top" id="mainNavbar ">
     <a class="navbar-brand" href="/">MinuteMart</a>
 
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="/products/">All &emsp;<span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
+    <div class="navbar-nav mr-auto">
+        <div class="d-flex flex-row">
             <form class="form-inline my-2 my-lg-0" action="/products/search" method="get">
                 <div class="input-group">
                     <input class="form-control" name="data" type="search" placeholder="Search" aria-label="Search">
@@ -16,6 +13,7 @@
                                     d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                             </svg></button>
                     </div>
+                    &ensp;
                 </div>
             </form>
 
@@ -23,67 +21,36 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-        </li>
-    </ul>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a class="nav-link" href="/products/">All</a>
+            <a class="nav-link" href="/#categories">Categories</a>
+        </div>
 
+    </div>
 
+    <div class="navbar-nav ml-auto">
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-        <div class="navbar-nav ml-auto">
-            <% if(!currentUser) {%>
-            <a class="nav-link" href="/users/login">Login</a>
-            <a class="nav-link" href="/users/register">Register</a>
-            <% } else {%>
-            <div class="dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                    aria-expanded="false">
-                    Hi, <%= currentUser.username %>!
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/mycart">My Cart</a>
-                    <a class="dropdown-item" href="/myorders">My Orders</a>
-                    <a class="dropdown-item" href="/myproducts">My Products</a>
-                    <a class="dropdown-item" href="/products/new">Sell new product</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/logout">Logout</a>
-                </div>
+        <% if(!currentUser) {%>
+        <a class="nav-link" href="/users/login">Login</a>
+        <a class="nav-link" href="/users/register">Register</a>
+        <% } else {%>
+        <div class="dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                aria-expanded="false">
+                Hi, <%= currentUser.username %>!
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="/mycart">My Cart</a>
+                <a class="dropdown-item" href="/myorders">My Orders</a>
+                <a class="dropdown-item" href="/myproducts">My Products</a>
+                <a class="dropdown-item" href="/products/new">Sell new product</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/logout">Logout</a>
             </div>
-            <% } %>
         </div>
-
+        <% } %>
     </div>
+
+
 </nav>
-
-<!-- <nav class="navbar navbar-dark navbar-expand-lg main-navbar sticky-top" id="mainNavbar">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">MinuteMart</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
-            aria-controls="navbarSupportedContent">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="/products/">All</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/products/new">New</a>
-                </li>
-
-            </ul>
-        </div>
-        <div class="navbar-nav ml-auto">
-            <% if(!currentUser) {%>
-            <a class="nav-link" href="/users/login">Login</a>
-            <a class="nav-link" href="/users/register">Register</a>
-            <% } else {%>
-            <a class="nav-link" href="/mycart">My Cart</a>
-            <a class="nav-link" href="/myorders">My Orders</a>
-            <a class="nav-link" href="/myproducts">My Products</a>
-
-            <a class="nav-link" href="/logout">Logout</a>
-            <% } %>
-        </div>
-    </div>
-</nav> -->

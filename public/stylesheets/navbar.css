@@ -13,3 +13,9 @@ body {
 .dropdown-menu {
     background-color: #76323f;
 }
+
+.dropdown-item:hover,
+.dropdown-item:active {
+    background-color: #b86b79;
+    color: white;
+}

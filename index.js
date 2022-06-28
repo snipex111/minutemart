@@ -29,7 +29,7 @@ app.use(methodOverride('_method'));
 app.use('/public', express.static('public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const { isLoggedIn, isAuthor, isReviewAuthor } = require('./middleware');
+const { isLoggedIn, isAuthor, isReviewAuthor, checkStock } = require('./middleware');
 
 
 //const dburl = process.env.DB_URL;
@@ -100,36 +100,49 @@ app.post('/register', catchAsync(async (req, res) => {
     }
 }))
 app.post('/neworder', isLoggedIn, catchAsync(async (req, res) => {
-
-    let neworder1 = await new orders(req.body);
-    neworder1.username = req.user._id;
     const curuser = await User.findById(req.user._id).populate('cart.item');
-    let orditems = [];
+    let chk = 0;
     for (let x of curuser.cart) {
-        orditems.push(x);
-        let ord = {
-            orderid: neworder1._id,
-            quantity: x.quantity
+        if (x.item.quantity - parseInt(x.quantity) < 0) {
+            req.flash('error', ` Item quantity exceeded for ${x.item.name}`);
+            chk = 1;
         }
-        x.item.quantity = x.item.quantity - parseInt(x.quantity);
-        x.item.orders.push(ord);
-        console.log(x.item);
-        x.item.save();
     }
-    neworder1.ordereditems = orditems;
-    let val = 0;
-    for (let x of curuser.cart) {
-        val += (x.quantity) * (x.item.price);
-    }
-    neworder1.paymentamount = val;
+    if (chk == 0) {
+        console.log("hi");
+        let neworder1 = await new orders(req.body);
+        neworder1.username = req.user._id;
 
-    while (curuser.cart.length) {
-        curuser.cart.pop();
+        let orditems = [];
+        for (let x of curuser.cart) {
+            orditems.push(x);
+            let ord = {
+                orderid: neworder1._id,
+                quantity: x.quantity
+            }
+            x.item.quantity = x.item.quantity - parseInt(x.quantity);
+            x.item.orders.push(ord);
+            console.log(x.item);
+            x.item.save();
+        }
+        neworder1.ordereditems = orditems;
+        let val = 0;
+        for (let x of curuser.cart) {
+            val += (x.quantity) * (x.item.price);
+        }
+        neworder1.paymentamount = val;
+
+        while (curuser.cart.length) {
+            curuser.cart.pop();
+        }
+        await neworder1.save();
+        curuser.orders.push(neworder1);
+        await curuser.save();
+        res.redirect('/myorders');
     }
-    await neworder1.save();
-    curuser.orders.push(neworder1);
-    await curuser.save();
-    res.redirect('/myorders');
+    else {
+        res.redirect('/mycart');
+    }
 }))
 app.get('/myorders', isLoggedIn, catchAsync(async (req, res) => {
 
@@ -443,7 +456,7 @@ app.post('/products/:productid/addstock', isLoggedIn, isAuthor, catchAsync(async
     res.redirect(`/products/${req.params.productid}/vieworders`);
 }))
 
-app.post('/products/:productid/removestock', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
+app.post('/products/:productid/removestock', isLoggedIn, isAuthor, checkStock, catchAsync(async (req, res) => {
     const curproduct = await products.findById(req.params.productid);
     if (!curproduct) {
         req.flash('error', 'Cannot find the product');

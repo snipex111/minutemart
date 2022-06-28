@@ -28,3 +28,16 @@ module.exports.isReviewAuthor = async (req, res, next) => {
     }
     next();
 }
+module.exports.checkStock = async (req, res, next) => {
+    const { productid } = req.params;
+    const prod = await products.findById(productid);
+    if (!prod) {
+        req.flash('error', 'Cannot find the product');
+        return res.redirect('/myproducts');
+    }
+    if (prod.quantity < parseInt(req.body.quantity)) {
+        req.flash('error', 'Cannot sell more units than available');
+        return res.redirect(`/products/${productid}/vieworders`);
+    }
+    next();
+}
