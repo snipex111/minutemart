@@ -513,8 +513,11 @@ app.use((err, req, res, next) => {
         err.message = 'Something went wrong';
     res.status(status1).render('error', { err })
 })
-const port = Process.env.PORT || 3000 ;
-
+let port = process.env.PORT;
+if(port == null || port == "")
+{
+  port=3000;
+}
 app.listen(port, () => {
     console.log('serving on port 3000');
 })
