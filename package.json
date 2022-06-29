@@ -16,6 +16,10 @@
     "url": "https://github.com/snipex111/minutemart/issues"
   },
   "homepage": "https://github.com/snipex111/minutemart#readme",
+  "engines":{
+    "node" : "16.15.1"
+  },
+
   "dependencies": {
     "body-parser": "^1.19.2",
     "bootstrap": "^5.1.3",
